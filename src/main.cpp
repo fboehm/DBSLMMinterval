@@ -22,7 +22,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "dbslmm.hpp"
+#include "../include/dbslmm.hpp"
 
 using namespace std;
 

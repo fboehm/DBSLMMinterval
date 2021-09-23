@@ -1,7 +1,7 @@
 #include <armadillo>
 #include <math.h>       /* floor */
 #include <algorithm> /* std::sort, std::set_difference */
-#include "subset_to_test_and_training.h"
+#include "../include/subset_to_test_and_training.h"
 
 using namespace arma;
 using namespace std;
