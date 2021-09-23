@@ -1,12 +1,12 @@
 #define ARMA_DONT_USE_WRAPPER
 
-#include <fstream>
 #include <iostream>
 #include <vector>
 #include <armadillo>
 #include <string>
 #include <boost/algorithm/string.hpp> // split
 #include <tuple> // std::tuple, std::get, std::tie, std::ignore
+#include <algorithm>
 
 #include "calc_asymptotic_variance.h"
 
@@ -148,4 +148,3 @@ arma::vec center_vector(arma::vec vector){
   arma::vec result = vector - arma::mean(vector);
   return result;
 }
-
