@@ -8,7 +8,6 @@
 #include <tuple> // std::tuple, std::get, std::tie, std::ignore
 #include <algorithm> 
 
-using namespace std;
 
 arma::mat calc_asymptotic_variance(arma::mat Xl_training, 
                                    arma::mat Xs_training, 
