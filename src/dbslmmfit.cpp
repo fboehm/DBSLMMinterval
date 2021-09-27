@@ -256,7 +256,7 @@ int DBSLMMFIT::est(
   arma::vec y_training = subset(y, training_indices);
   arma::vec y_test = subset(y, test_indices);
   //save y_test as csv
-//  y_test.save("y_test.csv", arma_ascii);
+  y_test.save("y_test.csv", arma_ascii);
   //return to Sheng's code
   
 	// get the maximum number of each block
