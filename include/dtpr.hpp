@@ -138,9 +138,9 @@ class IO {
 public:
 	int getRow(string infile); // get row number
 	int readBlock(string infile, char *separator, vector <BLOCK> &block);                // input block information
-	int readBim(int n_ref, string ref_str, char *separator, 
+	int readBim(int n_obs, string dat_str, char *separator, 
 				map<string, ALLELE> &bim, bool constr);                                  // input bim file for dbslmm
-	int readBim(int n_ref, string ref_str, char *separator, 
+	int readBim(int n_obs, string dat_str, char *separator, 
 				map<string, ALLELEB> &bim, bool constr);                                 // input bim file for external validation
 	double calP(double beta, double se, int sampleSize);                                 // calculate P value from GEMMA output
 	int readSumm(string summ_str, char *separator, vector<SUMM> &summ);                  // input gemma summary data
