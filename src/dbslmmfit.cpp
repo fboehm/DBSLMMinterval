@@ -458,41 +458,6 @@ int DBSLMMFIT::calcBlock(
     
 		/* END OF FREDS ASYMPTOTIC VAR CALC CODE */
 		// estimation
-		vec beta_l = zeros<vec>(num_l_block); 
-		estBlock(n_obs, sigma_s, geno_s, geno_l, z_s, z_l, beta_s, beta_l);//estBlock!
-		// summary 
-		for(int i = 0; i < num_l_block; i++) {
-			EFF eff_l; 
-			// eff_l.snp = info_l_block[i]->snp;
-			// eff_l.a1 = info_l_block[i]->a1;
-			// eff_l.maf = info_l_block[i]->maf;
-			eff_l.snp = info_l_block[i].snp;
-			eff_l.a1 = info_l_block[i].a1;
-			eff_l.maf = info_l_block[i].maf;
-			eff_l.beta = beta_l(i);
-			eff_l_block[i] = eff_l;
-		}
-	}
-	else{ //case of num_l_block ==0
-		// estimation
-		estBlock(n_obs, sigma_s, geno_s, z_s, beta_s); // estBlock!
-		eff_l_block[0].snp = eff_pseudo.snp;
-		eff_l_block[0].a1 = eff_pseudo.a1;
-		eff_l_block[0].maf = eff_pseudo.maf;
-		eff_l_block[0].beta = eff_pseudo.beta;
-	}
-	// output small effect
-	for(int i = 0; i < num_s_block; i++) {
-		EFF eff_s; 
-		// eff_s.snp = info_s_block[i]->snp;
-		// eff_s.a1 = info_s_block[i]->a1;
-		// eff_s.maf = info_s_block[i]->maf;
-		eff_s.snp = info_s_block[i].snp;
-		eff_s.a1 = info_s_block[i].a1;
-		eff_s.maf = info_s_block[i].maf;
-		eff_s.beta = beta_s(i); 
-		eff_s_block[i] = eff_s;
-	}
 	return 0; 
 }
 
@@ -567,22 +532,6 @@ NEED METHODS FOR calculating asymptotic var when a block has no large effects */
 	
 	
 	/* END ASYMPTOTIC VAR CALCS */
-	// estimation
-	vec beta_s = zeros<vec>(num_s_block); //num_s_block, ie, the number of small effect SNPs in the block, is the length of beta_s, ie, since every small effect SNP will be represented by one entry in beta_s
-	estBlock(n_obs, n_obs, sigma_s, geno_s, z_s, beta_s);
-	
-	// output small effect
-	for(int i = 0; i < num_s_block; i++) {
-		EFF eff_s; //declare EFF object. Overwrites previous eff_s object as we loop over i. That is, eff_s will be populated but it's overwritten for every value of i.
-		// eff_s.snp = info_s_block[i]->snp;
-		// eff_s.a1 = info_s_block[i]->a1;
-		// eff_s.maf = info_s_block[i]->maf;
-		eff_s.snp = info_s_block[i].snp;
-		eff_s.a1 = info_s_block[i].a1;
-		eff_s.maf = info_s_block[i].maf;
-		eff_s.beta = beta_s(i); 
-		eff_s_block[i] = eff_s;//store eff_s for future use as entry in eff_s_block
-	}
 	return 0; 
 }
 
