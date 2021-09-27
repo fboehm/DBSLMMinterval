@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <armadillo>
 
-#include "dtpr.hpp"
+#include "../include/dtpr.hpp"
 
 using namespace std;
 using namespace arma;
