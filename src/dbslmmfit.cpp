@@ -361,8 +361,7 @@ int DBSLMMFIT::est(
 //' @param eff_s_block effects object for small effects per block? 
 //' @param eff_l_block effects object for large effects per block?
 // estimate large and small effect for each block
-int DBSLMMFIT::calcBlock(
-                         int n_obs, 
+int DBSLMMFIT::calcBlock(int n_obs, 
                          double sigma_s, 
                          vector<int> idv, 
                          string bed_str, 
@@ -375,7 +374,8 @@ int DBSLMMFIT::calcBlock(
                          arma::vec y_training,
                          arma::Col<arma::uword> training_indices, 
                          arma::Col<arma::uword> test_indices, 
-                         int iter_number){
+                         int iter_number)
+  {
 	SNPPROC cSP;
 	IO cIO; 
 	ifstream bed_in(bed_str.c_str(), ios::binary);
@@ -457,12 +457,12 @@ int DBSLMMFIT::calcBlock(
     avar_diag.save(outfile, arma_ascii); 
     
 		/* END OF FREDS ASYMPTOTIC VAR CALC CODE */
+	}
 	return 0; 
 }
 
 // estimate only small effect for each block
-int DBSLMMFIT::calcBlock(
-                         int n_obs, 
+int DBSLMMFIT::calcBlock(int n_obs, 
                          double sigma_s, 
                          vector<int> idv, 
                          string bed_str, 
