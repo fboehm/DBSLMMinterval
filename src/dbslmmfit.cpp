@@ -217,7 +217,7 @@ int DBSLMMFIT::est(
 			B = 0;// reset B to zero
 			num_l_vec.clear(); 
 			num_s_vec.clear();
-		}//end if statement starting on line 154, if (B == B_MAX...
+		}//end if statement starting on line: if (B == B_MAX...
 	}//end loop for i
 	return 0;
 }//end function
