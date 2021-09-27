@@ -52,14 +52,15 @@ void DBSLMM::printHelp(void) {
 	cout << " FILE I/O RELATED OPTIONS" << endl;
 	cout << " -s        [filename]  " << " specify input the summary data for the small effect SNPs." << endl;
 	cout << " -l        [filename]  " << " specify input the summary data for the large effect SNPs." << endl;
-	cout << " -r        [filename]  " << " specify input the bfile of reference data." << endl;
+	cout << " -filestem        [filename]  " << " specify input the stem for the filenames of your data." << endl;
 	cout << " -n        [num]       " << " specify input the sample size of the summary data." << endl;
-	cout << " -mafMax   [num]       " << " specify input the maximium of the difference between reference panel and summary data." << endl;
 	cout << " -nsnp     [num]  " << " specify input the number of snp." << endl;
 	cout << " -b        [num]       " << " specify input the block information." << endl;
 	cout << " -h        [num]       " << " specify input the heritability." << endl;
 	cout << " -t        [filename]  " << " specify input thread." << endl;
 	cout << " -eff      [filename]  " << " specify output the estimate effect SNPs." << endl;
+	cout << " -seed     [int]       " << " specify the pseudorandom seed." << endl;
+	cout << " -test_proportion    [num]  " << " specify the proportion of subjects for the test set." << endl;
 	return;
 }
 
@@ -84,13 +85,13 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
 			str.assign(argv[i]);
 			cPar.l = str;
 		}
-		else if (strcmp(argv[i], "--reference") == 0 || strcmp(argv[i], "-r") == 0) {
+		else if (strcmp(argv[i], "--filestem") == 0 ) {
 
 			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
 			++i;
 			str.clear();
 			str.assign(argv[i]);
-			cPar.r = str;
+			cPar.filestem = str;
 		}
 		else if (strcmp(argv[i], "--N") == 0 || strcmp(argv[i], "-n") == 0) {
 
@@ -148,6 +149,23 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
 			str.assign(argv[i]);
 			cPar.eff = str;
 		}
+		else if (strcmp(argv[i], "--seed") == 0) {
+		  
+		  if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+		  ++i;
+		  str.clear();
+		  str.assign(argv[i]);
+		  cPar.seed = atoi(str.c_str());
+		}
+		else if (strcmp(argv[i], "--test_proportion") == 0) {
+		  
+		  if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+		  ++i;
+		  str.clear();
+		  str.assign(argv[i]);
+		  cPar.test_proportion = atof(str.c_str()); //proportion of subjects that go into test set
+		}
+		
 	}
 	return;
 }
@@ -172,7 +190,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 	// cout << "-eff:    " << cPar.eff << endl;
 	
 	// check files
-	string ref_fam_str = cPar.r + ".fam"; //next line below declares the ifstream objects, including an ifstream object for reading the fam file! 
+	string ref_fam_str = cPar.filestem + ".fam"; //next line below declares the ifstream objects, including an ifstream object for reading the fam file! 
 	ifstream seffstream(cPar.s.c_str()), leffstream(cPar.l.c_str()), reffstream(ref_fam_str.c_str()), beffstream(cPar.b.c_str());
 	if (cPar.s.size() == 0) {
 		cerr << "ERROR: -s is no parameter!" << endl;
@@ -186,16 +204,16 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 		cerr << "ERROR: " << cPar.s << " dose not exist!" << endl;
 		exit(1);
 	}
-	if (!reffstream) {
+/*	if (!reffstream) {
 		cerr << "ERROR: " << cPar.r << " dose not exist!" << endl;
 		exit(1);
-	}
+}*/
 	if (cPar.b.size() == 0) {
 		cerr << "ERROR: -b is no parameter!" << endl;
 		exit(1);
 	}
-	if (cPar.r.size() == 0) {
-		cerr << "ERROR: " << cPar.r << " dose not exist!" << endl;
+	if (cPar.filestem.size() == 0) {
+		cerr << "ERROR: " << cPar.filestem << " dose not exist!" << endl;
 		exit(1);
 	}
 	if (cPar.h > 1 || cPar.h < 0){
@@ -206,42 +224,57 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 		cerr << "ERROR: -t is not correct (1, 100)!" << endl;
 		exit(1);
 	}
+	if (cPar.seed <= 0) {
+	  cerr << "ERROR: " << cPar.seed << " must be positive" << endl;
+	  exit(1);
+	}
+	if (cPar.test_proportion <= 0 || cPar.test_proportion >= 1) {
+	  cerr << "ERROR: " << cPar.seed << " must be positive and less than 1" << endl;
+	  exit(1);
+	}
 	
 	// get sample size of reference panel 
 	char separate[] = "\t";
-	cout << "Reading PLINK FAM file from [" << cPar.r << ".fam]" << endl;
-	int n_ref = cIO.getRow(ref_fam_str); //n_ref is sample size of reference panel!
-	cout << n_ref << " individuals to be included from reference FAM file." << endl;
+	cout << "Reading PLINK FAM file from [" << cPar.filestem << ".fam]" << endl;
+	int n_dat = cIO.getRow(ref_fam_str); //n_ref is sample size of reference panel!
+	cout << n_dat << " individuals to be included from data FAM file." << endl;
 	
 	// get SNP of reference panel
-	cout << "Reading PLINK BIM file from [" << cPar.r << ".bim]" << endl;
-	map <string, ALLELE> ref_bim;
+	cout << "Reading PLINK BIM file from [" << cPar.filestem << ".bim]" << endl;
+	map <string, ALLELE> dat_bim;
 	bool constr = true; 
 	if (abs(cPar.mafMax-1.0) < 1e-10){
 		constr = false; 
 	}
-	cIO.readBim(n_ref, cPar.r, separate, ref_bim, constr); //read BIM for ref data
-	int num_snp_ref = ref_bim.size(); //num_snp_ref is number of SNPs in the reference data
-	cout << num_snp_ref << " SNPs to be included from reference BIM file." << endl;
+	cIO.readBim(n_dat, cPar.filestem, separate, dat_bim, constr); //read BIM for ref data
+	int num_snp_dat = dat_bim.size(); //num_snp_ref is number of SNPs in the reference data
+	cout << num_snp_dat << " SNPs to be included from BIM file." << endl;
 
 	// input block file
 	vector <BLOCK> block_dat; 
-	cIO.readBlock(cPar.b, separate, block_dat); //readBlock is defined in scr/dtpr.cpp 
+	cIO.readBlock(cPar.b, separate, block_dat); //populate block_dat
+	//readBlock is defined in scr/dtpr.cpp 
  
 	// input small effect summary data
 	cout << "Reading summary data of small effect SNPs from [" << cPar.s << "]" << endl;
 	vector <SUMM> summ_s;
-	int n_s = cIO.readSumm(cPar.s, separate, summ_s); //readSumm is defined in scr/dtpr.cpp
+	int n_s = cIO.readSumm(cPar.s, separate, summ_s);  // ?populate summ_s?
+	//readSumm is defined in scr/dtpr.cpp
 	// What is n_s?? clearly, an integer, but is it the number of small effect snps? or is it a number of subjects, 
 	// like the number of subjects used to get small effect snps?
 	vector <POS> inter_s; // what does POS mean here? I get that it's the class for inter_s, but what exactly does it mean?
 	// see scr/dtpr.hpp for definition of POS class
 	bool badsnp_s[n_s] = {false}; 
-	cSP.matchRef(summ_s, ref_bim, inter_s, cPar.mafMax, badsnp_s); //matchRef is defined in scr/dtpr.cpp
-	cout << "After filtering, " << inter_s.size() << " small effect SNPs are selected." << endl;
-	vector <INFO> info_s; 
-	int num_block_s = cSP.addBlock(inter_s, block_dat, info_s); //addBlock is defined in scr/dtpr.cpp
-	
+	cSP.matchRef(summ_s, dat_bim, inter_s, cPar.mafMax, badsnp_s); //matchRef is defined in scr/dtpr.cpp
+
+/*	cout << "After filtering, " << inter_s.size() << " small effect SNPs are selected." << endl;
+*/
+ 	vector <INFO> info_s;
+
+/*	int num_block_s = cSP.addBlock(inter_s, block_dat, info_s); //addBlock is defined in scr/dtpr.cpp
+	*/
+  int num_block_s = cSP.addBlock(inter_s, block_dat, info_s); // populate info_s??
+  //addBlock is defined in scr/dtpr.cpp
 	// output samll effect badsnps 
 	string badsnps_str = cPar.eff + ".badsnps"; 
 	ofstream badsnpsFout(badsnps_str.c_str());
@@ -261,7 +294,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 		int n_l = cIO.readSumm(cPar.l, separate, summ_l);
 		// vector <POS> inter_l;
 		bool badsnp_l[n_l] = {false};
-		cSP.matchRef(summ_l, ref_bim, inter_l, cPar.mafMax, badsnp_l);
+		cSP.matchRef(summ_l, dat_bim, inter_l, cPar.mafMax, badsnp_l);
 		if (inter_l.size() != 0){
 			int num_block_l = cSP.addBlock(inter_l, block_dat, info_l); 
 			cout << "After filtering, " << inter_l.size() << " large effect SNPs are selected." << endl;
@@ -283,14 +316,15 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 	if (inter_l.size() != 0){
 		// fit model
 		vector <EFF> eff_s, eff_l; 
-		vector<int> idv(n_ref);
-		for (int i = 0; i < n_ref; i++) idv[i] = 1; 
-		string bed_str = cPar.r + ".bed";
+		vector<int> idv(n_dat);
+		for (int i = 0; i < n_dat; i++) idv[i] = 1; 
+		string bed_str = cPar.filestem + ".bed";
 		double t_fitting = cIO.getWalltime();
 		double sigma_s = cPar.h / (double)cPar.nsnp; // this tells us that sigma_s *is* $\hat\sigma_s^2$!
 		cout << "Fitting model..." << endl;
 		string fam_file = "../test_dat/test_chr1.fam";
-		cDBSF.est(n_ref, 
+		unsigned int seed = 715341;
+		cDBSF.est(
             cPar.n, 
             sigma_s, 
             num_block_s, 
@@ -302,7 +336,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             eff_s, 
             eff_l, 
             fam_file, 
-            715341); 
+            seed); 
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;
 
@@ -330,6 +364,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 		double sigma_s = cPar.h / (double)cPar.nsnp;
 		cout << "Fitting model..." << endl;
 		string fam_file = "../test_dat/test_chr1.fam";
+		unsigned int seed = 715341;
 		cDBSF.est(n_ref, 
             cPar.n, 
             sigma_s, 
@@ -340,7 +375,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             cPar.t, 
             eff_s, 
             fam_file, 
-            715341
+            seed
             ); //call est for small effects only!
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;

@@ -30,7 +30,7 @@ public:
 	//parameters
 	string s; 
 	string l;
-	string r;
+	string filestem;
 	int n;
 	double mafMax; 
 	int nsnp;
@@ -38,6 +38,8 @@ public:
 	double h;
 	int t;
 	string eff;
+	unsigned int seed;
+	double test_proportion;
 };
 
 class DBSLMM {
