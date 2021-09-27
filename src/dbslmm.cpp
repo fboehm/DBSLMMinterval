@@ -322,8 +322,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 		double t_fitting = cIO.getWalltime();
 		double sigma_s = cPar.h / (double)cPar.nsnp; // this tells us that sigma_s *is* $\hat\sigma_s^2$!
 		cout << "Fitting model..." << endl;
-		string fam_file = "../test_dat/test_chr1.fam";
-		unsigned int seed = 715341;
+		string fam_file = cPar.filestem + ".fam";
 		cDBSF.est(
             cPar.n, 
             sigma_s, 
@@ -336,7 +335,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             eff_s, 
             eff_l, 
             fam_file, 
-            seed); 
+            cPar.seed, cPar.test_proportion); 
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;
 
@@ -357,15 +356,14 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 	if (inter_l.size() == 0 || !leffstream){
 		// fit model, ie, fit for small effects only!
 		vector <EFF> eff_s; //declare eff_s as object with class EFF
-		vector<int> idv(n_ref);//declare idv as a vector of integers with length n_ref
-		for (int i = 0; i < n_ref; i++) idv[i] = 1; //set every entry of idv to value 1 (integer)
-		string bed_str = cPar.r + ".bed";
+		vector<int> idv(n_dat);//declare idv as a vector of integers with length n_ref
+		for (int i = 0; i < n_dat; i++) idv[i] = 1; //set every entry of idv to value 1 (integer)
+		string bed_str = cPar.filestem + ".bed";
 		double t_fitting = cIO.getWalltime();
 		double sigma_s = cPar.h / (double)cPar.nsnp;
 		cout << "Fitting model..." << endl;
-		string fam_file = "../test_dat/test_chr1.fam";
-		unsigned int seed = 715341;
-		cDBSF.est(n_ref, 
+		string fam_file = cPar.filestem + ".fam";
+		cDBSF.est( 
             cPar.n, 
             sigma_s, 
             num_block_s, 
@@ -375,7 +373,8 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             cPar.t, 
             eff_s, 
             fam_file, 
-            seed
+            cPar.seed,
+            cPar.test_proportion
             ); //call est for small effects only!
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;
