@@ -26,10 +26,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "omp.h"
 
-#include "dtpr.hpp"
-#include "dbslmmfit.hpp"
-#include "calc_asymptotic_variance.h"
-#include "subset_to_test_and_training.h"
+#include "../include/dtpr.hpp"
+#include "../include/dbslmmfit.hpp"
+#include "../include/calc_asymptotic_variance.h"
+#include "../include/subset_to_test_and_training.h"
 
 using namespace std;
 using namespace arma;
