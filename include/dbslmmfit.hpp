@@ -31,17 +31,17 @@ using namespace arma;
 class DBSLMMFIT {
 public:
 	// estimate large and small effect
-	int est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
+	int est(int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
 			vector <INFO> info_s, vector <INFO> info_l, int thread, 
 			vector <EFF> &eff_s, vector <EFF> &eff_l, string fam_file, unsigned int seed,
 			double test_proportion);
 	// estimate only small effect
-	int est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
+	int est(int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
 			vector <INFO> info_s, int thread, vector <EFF> &eff_s, string fam_file,
 			unsigned int seed,
 			double test_proportion);
 	// estimate large and small effect for each block
-	int calcBlock(int n_ref, int n_obs, double sigma_s, vector<int> idv, string bed_str, 
+	int calcBlock(int n_obs, double sigma_s, vector<int> idv, string bed_str, 
 				  vector <INFO> info_s_block_full, vector <INFO> info_l_block_full, int num_s_block, int num_l_block, 
 				  vector <EFF> &eff_s_block, vector <EFF> &eff_l_block, 
 				  arma::vec y_training,
@@ -49,7 +49,7 @@ public:
 				  arma::Col<arma::uword> test_indices,
 				  int iter_number);
 	// estimate only small effect for each block
-	int calcBlock(int n_ref, int n_obs, double sigma_s, vector<int> idv, string bed_str, 
+	int calcBlock(int n_obs, double sigma_s, vector<int> idv, string bed_str, 
 				  vector <INFO> info_s_block_full, int num_s_block, 
 				  vector <EFF> &eff_s_block, 
 				  arma::vec y_training,
@@ -61,8 +61,8 @@ public:
 	// solve x=AB
 	mat PCGm(mat A, mat B, size_t maxiter, const double tol);
 	// small and large effect
-	int estBlock(int n_ref, int n_obs, double sigma_s, mat geno_s, mat geno_l, vec z_s, vec z_l, vec &beta_s, vec &beta_l);
+	int estBlock(int n_obs, double sigma_s, mat geno_s, mat geno_l, vec z_s, vec z_l, vec &beta_s, vec &beta_l);
 	// only small effect
-	int estBlock(int n_ref, int n_obs, double sigma_s, mat geno_s, vec z_s, vec &beta_s);
+	int estBlock(int n_obs, double sigma_s, mat geno_s, vec z_s, vec &beta_s);
 };
 #endif
