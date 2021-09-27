@@ -457,7 +457,6 @@ int DBSLMMFIT::calcBlock(
     avar_diag.save(outfile, arma_ascii); 
     
 		/* END OF FREDS ASYMPTOTIC VAR CALC CODE */
-		// estimation
 	return 0; 
 }
 
@@ -473,8 +472,7 @@ int DBSLMMFIT::calcBlock(
             						 arma::vec y_training,
             						 arma::Col<arma::uword> training_indices, 
             						 arma::Col<arma::uword> test_indices, 
-            						 int iter_number
-            						 ){
+            						 int iter_number){
 	SNPPROC cSP; // declare new SNPPROC object, cSP. Below, we'll need to populate cSP.
 	IO cIO; //declare IO object, cIO
 	ifstream bed_in(bed_str.c_str(), ios::binary);//ios::binary means "open in binary mode". bed_str is an argument to the function, presumably something like the file path??
