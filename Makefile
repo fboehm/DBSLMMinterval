@@ -16,7 +16,7 @@ CXX = g++
 CXXFLAG = -static -fopenmp -O3 -std=c++11 -lm -llapacke -llapack -lblas -Wall
 all: $(OUTPUTD)
 $(OUTPUTD): src/main.o src/dtpr.o src/dbslmm.o src/dbslmmfit.o src/calc_asymptotic_variance.o src/subset_to_test_and_training.o
-	$(CXX) src/main_dbslmm.o src/dtpr.o src/dbslmm.o src/dbslmmfit.o src/calc_asymptotic_variance.o src/subset_to_test_and_training.o -o $(OUTPUTD) $(CXXFLAG) -L $(ARMALIB)
+	$(CXX) src/main.o src/dtpr.o src/dbslmm.o src/dbslmmfit.o src/calc_asymptotic_variance.o src/subset_to_test_and_training.o -o $(OUTPUTD) $(CXXFLAG) -L $(ARMALIB)
 src/main.o: src/main.cpp
 	$(CXX) -c src/main.cpp -o src/main.o
 src/dbslmm.o: src/dbslmm.cpp include/dbslmm.hpp
