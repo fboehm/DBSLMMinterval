@@ -15,73 +15,96 @@ using namespace std;
 
 //' Calculate the asymptotic variance for the predicted y values
 //' 
-//' @param Xl_training genotypes matrix for large effects markers in training cohort
-//' @param Xs_training genotypes matrix for small effects markers in training cohort
-//' @param Xl_test genotypes matrix for large effects in test cohort
-//' @param Xs_test genotypes matrix for small effects in test cohort
+//' @param Sigma_ll Sigma_ll matrix for a single LD block
+//' @param Sigma_ls Sigma_ls matrix for a single LD block
+//' @param Sigma_ss Sigma_ss matrix for a single LD block
 //' @param sigma2_s estimated value of sigma^2_s
-//' @param y_training trait values vector
+//' @param n sample size
+//' @param Xl_test genotypes matrix for large effect SNPs for test subjects
+//' @param Xs_test genotypes matrix for small effect SNPs for test subjects
 //' @return variance of predicted y values
 
-arma::mat calc_asymptotic_variance(arma::mat Xl_training, 
-                                   arma::mat Xs_training, 
+arma::mat calc_asymptotic_variance(arma::mat Sigma_ll, 
+                                   arma::mat Sigma_ls, 
+                                   arma::mat Sigma_ss, 
+                                   double sigma2_s, 
+                                   unsigned int n,
                                    arma::mat Xl_test, 
-                                   arma::mat Xs_test,
-                                   double sigma2_s,
-                                   arma::vec y_training){
-  arma::mat Hinv = calc_Hinv(Xs_training, sigma2_s);
-  arma::mat var_bl = calc_var_betal(Xl_training, 
-                                    Hinv, 
-                                    y_training);
-  arma::mat var_bs = calc_var_betas(Xl_training, 
-                                    Xs_training, 
-                                    Hinv, 
+                                   arma::mat Xs_test){
+  arma::mat Ainv = calc_A_inverse(Sigma_ss, sigma2_s, n);
+  arma::mat var_bl = calc_var_betal(Sigma_ll, 
+                                    Sigma_ls, 
+                                    Sigma_ss, 
+                                    Ainv, 
+                                    n);
+  arma::mat var_bs = calc_var_betas(Sigma_ss, 
+                                    Sigma_ls,
+                                    Ainv,
                                     sigma2_s,
-                                    y_training, 
+                                    n,
                                     var_bl);
-  arma::mat result = Xl_test.t() * var_bl * Xl_test + Xs_test.t() * var_bs * Xs_test;
+  arma::mat result = arma::trans(Xl_test) * var_bl * Xl_test + arma::trans(Xs_test) * var_bs * Xs_test;
   return(result);
 }
+
+//' Calculate A inverse matrix
+//' 
+//' @param Sigma_ss Sigma_ss matrix for a single LD block
+//' @param sigma2_s estimate of sigma^2_s
+//' @param n sample size
+//' @return A inverse matrix
+
+arma::mat calc_A_inverse(arma::mat Sigma_ss, 
+                         double sigma2_s, 
+                         unsigned int n){
+  //determine m_s
+  unsigned int m_s = Sigma_ss.n_rows;
+  // calculate result
+  arma::mat result = arma::inv(arma::eye(m_s, m_s) / (n * sigma2_s) + Sigma_ss);
+  return result;
+}
+
 
 
 //' Calculate variance of coefficient estimator for large effects
 //' 
+//' @param Sigma_ll Sigma_ll constructed for one LD block
+//' @param Sigma_ls Sigma_ls constructed for one LD block
+//' @param Sigma_ss Sigma_ss constructed for one LD block
+//' @param A_inverse inverse of sigma^{-2}n^{-1} I_ms + Sigma_ss 
+//' @param n sample size
 //' @return covariance matrix
 
 arma::mat calc_var_betal(arma::mat Sigma_ll, 
                       arma::mat Sigma_ls, 
-                      arma::mat Sigma_ss, 
-                      double sigma2_s, 
+                      arma::mat Sigma_ss,
+                      arma::mat A_inverse,
                       unsigned int n){
-  //set m_s
-  unsigned int m_s = Sigma_ss.n_rows;
-  arma::mat small = arma::eye(m_s, m_s) / (n * sigma2_s) + Sigma_ss;
-  arma::mat big = Sigma_ll - Sigma_ls * arma::inv(small) * arma::trans(Sigma_ls);
+  //calculate second matrix
+  arma::mat big = Sigma_ll - Sigma_ls * A_inverse * arma::trans(Sigma_ls);
+  //invert and divide by n
   arma::mat result = arma::inv(big) / n;
   return result;
 }
 
 //' Calculate variance of coefficient estimator for small effects
 //' 
-//' @param Xs matrix of genotypes for small effect markers
-//' @param Xl matrix of genotypes for large effect markers
-//' @param Hinv inverse of H matrix
+//' @param Sigma_ss Sigma_ss matrix for a single LD block
+//' @param Sigma_ls Sigma_ls matrix for a single LD block
+//' @param A_inverse A inverse matrix (for a single LD block)
 //' @param sigma2_s estimated value of sigma^2_s
-//' @param y trait values vector
+//' @param n sample size
 //' @param var_bl variance of beta hat l
 //' @return covariance matrix
   
-arma::mat calc_var_betas(arma::mat Xl, 
-                         arma::mat Xs,
-                         arma::mat Hinv,
+arma::mat calc_var_betas(arma::mat Sigma_ss, 
+                         arma::mat Sigma_ls,
+                         arma::mat A_inverse,
                          double sigma2_s,
-                         arma::vec y,
+                         unsigned int n,
                          arma::mat var_bl){
-  //var y
-  arma::mat vy = y * y.t(); 
-  // 
-  arma::mat arg1 = sigma2_s * sigma2_s * Xs.t() * Hinv * vy * Hinv * Xs;
-  arma::mat result = arg1 + sigma2_s * sigma2_s * Xs.t() * Hinv * Xl * var_bl * Xl.t() * Hinv * Xs;
+  arma::mat small = arma::trans(Sigma_ls) - Sigma_ss * A_inverse * arma::trans(Sigma_ls);
+  arma::mat result = sigma2_s * sigma2_s * n * small * var_bl * arma::trans(small);
   return result;
 }
 
