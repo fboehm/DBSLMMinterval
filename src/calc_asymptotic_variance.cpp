@@ -43,35 +43,21 @@ arma::mat calc_asymptotic_variance(arma::mat Xl_training,
   return(result);
 }
 
-//' Calculate H inverse matrix (with Woodbury identity)
-//' 
-//' @param Xs_training
-//' @param sigma2_s estimated value of sigma^2_s
-//' @return H inverse matrix
-
-arma::mat calc_Hinv(arma::mat Xs_training, 
-                    double sigma2_s){
-  int n = Xs_training.n_rows;
-  int ms = Xs_training.n_cols;
-  arma::mat result = arma::eye(n, n) - Xs_training * arma::inv(arma::eye(ms, ms) / sigma2_s + Xs_training.t() * Xs_training) * Xs_training.t();
-  return(result);
-}
 
 //' Calculate variance of coefficient estimator for large effects
 //' 
-//' @param Xl matrix of genotypes for large effect markers
-//' @param Hinv inverse of H matrix
-//' @param y trait values vector
 //' @return covariance matrix
 
-arma::mat calc_var_betal(arma::mat Xl, 
-                      arma::mat Hinv, 
-                      arma::vec y){
-  //var y
-  arma::mat vy = y * y.t(); //check this!! only true if mean(y) = 0 vector.
-  // (Xl^T Hinv Xl)^{-1}
-  arma::mat arg1 = arma::inv(Xl.t() * Hinv * Xl);
-  arma::mat result = arg1 * Xl.t() * Hinv * vy * Hinv * Xl * arg1;
+arma::mat calc_var_betal(arma::mat Sigma_ll, 
+                      arma::mat Sigma_ls, 
+                      arma::mat Sigma_ss, 
+                      double sigma2_s, 
+                      unsigned int n){
+  //set m_s
+  unsigned int m_s = Sigma_ss.n_rows;
+  arma::mat small = arma::eye(m_s, m_s) / (n * sigma2_s) + Sigma_ss;
+  arma::mat big = Sigma_ll - Sigma_ls * arma::inv(small) * arma::trans(Sigma_ls);
+  arma::mat result = arma::inv(big) / n;
   return result;
 }
 

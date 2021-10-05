@@ -15,11 +15,12 @@ arma::mat calc_asymptotic_variance(arma::mat Xl_training,
                                    arma::mat Xs_test,
                                    double sigma2_s,
                                    arma::vec y_training);
-arma::mat calc_Hinv(arma::mat Xs_training, 
-                    double sigma2_s);
-arma::mat calc_var_betal(arma::mat Xl, 
-                      arma::mat Hinv, 
-                      arma::vec y);
+
+arma::mat calc_var_betal(arma::mat Sigma_ll, 
+                         arma::mat Sigma_ls, 
+                         arma::mat Sigma_ss, 
+                         double sigma2_s, 
+                         unsigned int n);
   
 
 arma::mat calc_var_betas(arma::mat Xl, 
