@@ -134,11 +134,11 @@ int DBSLMMFIT::est(
 	// loop 
 	// vector < vector <INFO*> > info_s_Block(B_MAX, vector <INFO*> ((int)len_s)), info_l_Block(B_MAX, vector <INFO*> ((int)len_l));
 	vector < vector <INFO> > info_s_Block(B_MAX, 
-                                       vector <INFO> ((int)len_s)), 
+                                        vector <INFO> ((int)len_s)), 
                            info_l_Block(B_MAX, 
                                         vector <INFO> ((int)len_l)); //declare info_l_Block & info_s_Block
 	vector < vector <EFF> > eff_s_Block(B_MAX, 
-                                     vector <EFF> ((int)len_s)), 
+                                      vector <EFF> ((int)len_s)), 
                           eff_l_Block(B_MAX, 
                                       vector <EFF> ((int)len_l)); //declare eff_l_Block & eff_s_Block
 	vector <int> num_s_vec, num_l_vec; //declare num_s_vec & num_l_vec
