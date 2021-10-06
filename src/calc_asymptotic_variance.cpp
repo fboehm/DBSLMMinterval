@@ -104,7 +104,9 @@ arma::mat calc_var_betas(arma::mat Sigma_ss,
                          unsigned int n,
                          arma::mat var_bl){
   arma::mat small = arma::trans(Sigma_ls) - Sigma_ss * A_inverse * arma::trans(Sigma_ls);
-  arma::mat result = sigma2_s * sigma2_s * n * small * var_bl * arma::trans(small);
+  arma::mat term2 = small * var_bl * arma::trans(small);
+  arma::mat term1 = Sigma_ss - Sigma_ss * A_inverse * Sigma_ss;
+  arma::mat result = sigma2_s * sigma2_s * n * (term1 + term2);
   return result;
 }
 
