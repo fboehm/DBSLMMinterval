@@ -39,7 +39,7 @@ using namespace arma;
 //' @param n_obs sample size of the data
 //' @param sigma_s the estimate for sigma_s^2
 //' @param num_block number of blocks in the genome
-//' @param idv 
+//' @param idv indicator vector for subjects
 //' @param bed_str file path for the plink bed file
 //' @param info_s small effect SNP info object
 //' @param info_l large effect SNP info object
@@ -61,12 +61,12 @@ int DBSLMMFIT::est(
                    int thread, 
                    vector <EFF> &eff_s, 
                    vector <EFF> &eff_l,
-                   string fam_file,
+                   //string fam_file,
                    unsigned int seed,
                    double test_proportion){ //Fred added fam_file so that we can read in the phenotype data
 	// split subjects into training and test sets
 	//specify proportion of n_obs that goes into test set
-  arma::Col<arma::uword> test_indices = get_test_indices(n_obs, 
+  /*arma::Col<arma::uword> test_indices = get_test_indices(n_obs, 
                                                          test_proportion,
                                                          seed);
   arma::Col<arma::uword> training_indices = get_training_indices(test_indices, 
@@ -86,7 +86,7 @@ int DBSLMMFIT::est(
   arma::vec y_test = subset(y, test_indices);
   //save y_test as csv
   y_test.save("y_test.csv", arma_ascii);
-  
+  */
   //return to Sheng's code
 	// get the maximum number of each block
 	int count_s = 0, count_l = 0; //set counters at zero
@@ -196,11 +196,12 @@ int DBSLMMFIT::est(
 						  num_s_vec[b], 
               num_l_vec[b], 
               eff_s_Block[b], 
-              eff_l_Block[b],
+              eff_l_Block[b]/*,
               y_training, 
               training_indices, 
               test_indices, 
-              i);
+              i */
+			  );
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -231,13 +232,13 @@ int DBSLMMFIT::est(
                    string bed_str,
           				 vector <INFO> info_s, 
           				 int thread, 
-          				 vector <EFF> &eff_s, 
-          				 string fam_file,
+          				 vector <EFF> &eff_s /*, 
+          				 //string fam_file,
           				 unsigned int seed,
-          				 double test_proportion){
+          				 double test_proportion*/){
   // split subjects into training and test sets
   //specify proportion of n_obs that goes into test set
-  arma::Col<arma::uword> test_indices = get_test_indices(n_obs, 
+  /*arma::Col<arma::uword> test_indices = get_test_indices(n_obs, 
                                                          test_proportion,
                                                          seed);
   arma::Col<arma::uword> training_indices = get_training_indices(test_indices, 
@@ -257,6 +258,7 @@ int DBSLMMFIT::est(
   arma::vec y_test = subset(y, test_indices);
   //save y_test as csv
   y_test.save("y_test.csv", arma_ascii);
+  */
   //return to Sheng's code
   
 	// get the maximum number of each block
@@ -327,11 +329,11 @@ int DBSLMMFIT::est(
               bed_str, 
               info_s_Block[b],
 						  num_s_vec[b], 
-              eff_s_Block[b], 
+              eff_s_Block[b]/*, 
               y_training, 
               training_indices, 
               test_indices, 
-              i);
+              i*/);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -370,11 +372,11 @@ int DBSLMMFIT::calcBlock(int n_obs,
                          int num_s_block, 
                          int num_l_block, 
                          vector <EFF> &eff_s_block, 
-                         vector <EFF> &eff_l_block,
+                         vector <EFF> &eff_l_block/*,
                          arma::vec y_training,
                          arma::Col<arma::uword> training_indices, 
                          arma::Col<arma::uword> test_indices, 
-                         int iter_number)
+                         int iter_number*/)
   {
 	SNPPROC cSP;
 	IO cIO; 
@@ -433,8 +435,9 @@ int DBSLMMFIT::calcBlock(int n_obs,
 			cSP.nomalizeVec(geno);
 			geno_l.col(i) = geno;
 		}
+		
 		/* INSERT MY ASYMPTOTIC VAR CALC HERE*/
-		//split geno_l and geno_s into training and test sets
+		/*//split geno_l and geno_s into training and test sets
 		arma::mat geno_l_training = subset(geno_l, training_indices);
 		arma::mat geno_l_test = subset(geno_l, test_indices);
 		arma::mat geno_s_training = subset(geno_s, training_indices);
@@ -455,7 +458,7 @@ int DBSLMMFIT::calcBlock(int n_obs,
     std::string outfile = iter_number_string + ".csv";
     //save diagonal as csv
     avar_diag.save(outfile, arma_ascii); 
-    
+    */
 		/* END OF FREDS ASYMPTOTIC VAR CALC CODE */
 	}
 	return 0; 
@@ -468,11 +471,11 @@ int DBSLMMFIT::calcBlock(int n_obs,
                          string bed_str, 
               					 vector <INFO> info_s_block_full, 
             						 int num_s_block, 
-            						 vector <EFF> &eff_s_block,
+            						 vector <EFF> &eff_s_block/*,
             						 arma::vec y_training,
             						 arma::Col<arma::uword> training_indices, 
             						 arma::Col<arma::uword> test_indices, 
-            						 int iter_number){
+            						 int iter_number*/){
 	SNPPROC cSP; // declare new SNPPROC object, cSP. Below, we'll need to populate cSP.
 	IO cIO; //declare IO object, cIO
 	ifstream bed_in(bed_str.c_str(), ios::binary);//ios::binary means "open in binary mode". bed_str is an argument to the function, presumably something like the file path??
@@ -503,13 +506,13 @@ int DBSLMMFIT::calcBlock(int n_obs,
 		cSP.nomalizeVec(geno); // then, normalize geno
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
-	/* INSERT ASYMPTOTIC VARIANCE CALCS HERE */
+	/* INSERT ASYMPTOTIC VARIANCE CALCS HERE */ /*
 	//split geno_l and geno_s into training and test sets
 	arma::mat geno_s_training = subset(geno_s, training_indices);
 	arma::mat geno_s_test = subset(geno_s, test_indices);
 	
 	// calculate var(\hat\tilde y)
-/*	arma::mat asymptotic_var = calc_asymptotic_variance(geno_l_training, 
+	arma::mat asymptotic_var = calc_asymptotic_variance(geno_l_training, 
                                                      geno_s_training, 
                                                      geno_l_test,
                                                      geno_s_test,
