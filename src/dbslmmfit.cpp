@@ -600,7 +600,7 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 //' @param beta_s coefficient estimates for small effect SNPs in this block
 //' @param beta_l coefficient estimates for large effect SNPs in this block 
 
-int DBSLMMFIT::estBlock(
+std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::estBlock(
                         int n_obs, 
                         double sigma_s, 
                         mat geno_s, 
@@ -625,7 +625,7 @@ int DBSLMMFIT::estBlock(
 	SIGMA_ll *= tau/(double)n_obs;
 	vec DIAG_l(geno_l.n_cols, fill::ones);
 	DIAG_l *= (1.0-tau);
-	SIGMA_ll += diagmat(DIAG_l);
+	SIGMA_ll += diagmat(DIAG_l); //arma::diagmat
 	mat SIGMA_ss = geno_s.t() * geno_s; 
 	SIGMA_ss *= tau/(double)n_obs;
 	vec DIAG_s(geno_s.n_cols, fill::ones);
@@ -652,10 +652,12 @@ int DBSLMMFIT::estBlock(
 	beta_s = sqrt(n_obs) * z_s - (double)n_obs * SIGMA_ls.t() * beta_l - SIGMA_ss_z_s_SIGMA_sl_beta_l; 
 	beta_s *= sigma_s;
 	
-	return 0; 
+	auto result = std::make_tuple(SIGMA_ll, SIGMA_ls, SIGMA_ss);
+	return(result);
+	//return 0; 
 }
 
-int DBSLMMFIT::estBlock(
+arma::mat DBSLMMFIT::estBlock(
                         int n_obs, 
                         double sigma_s, 
                         mat geno_s, 
@@ -681,5 +683,5 @@ int DBSLMMFIT::estBlock(
 	vec z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl = z_s - SIGMA_ss_SIGMA_ss_inv_z_s; 
 	beta_s = sqrt(n_obs) * sigma_s * z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl; 
 	
-	return 0; 
+	return SIGMA_ss; 
 }
