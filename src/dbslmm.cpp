@@ -333,9 +333,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             info_l, 
             cPar.t, 
             eff_s, 
-            eff_l, 
-            fam_file, 
-            cPar.seed, cPar.test_proportion); 
+            eff_l); 
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;
 
@@ -371,11 +369,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             bed_str, 
             info_s, 
             cPar.t, 
-            eff_s, 
-      //      fam_file, 
-            cPar.seed,
-            cPar.test_proportion
-            ); //call est for small effects only!
+            eff_s); //call est for small effects only!
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;
 
