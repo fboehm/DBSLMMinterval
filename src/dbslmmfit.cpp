@@ -61,7 +61,6 @@ int DBSLMMFIT::est(
                    int thread, 
                    vector <EFF> &eff_s, 
                    vector <EFF> &eff_l){ 
-  //return to Sheng's code
 	// get the maximum number of each block
 	int count_s = 0, count_l = 0; //set counters at zero
 	vec num_s = zeros<vec>(num_block), num_l = zeros<vec>(num_block); //num_s & num_l have one entry per block 
