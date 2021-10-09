@@ -71,13 +71,15 @@ public:
                                                        mat geno_l, 
                                                        vec z_s, 
                                                        vec z_l, 
-                                                       vec &beta_s, 
-                                                       vec &beta_l);
+                                                       //vec &beta_s, 
+                                                       //vec &beta_l);
+                                                       vec beta_s,
+                                                       vec beta_l);
 	// only small effect
 	arma::mat estBlock(int n_obs, 
                     double sigma_s, 
                     mat geno_s, 
                     vec z_s, 
-                    vec &beta_s);
+                    vec beta_s);
 };
 #endif

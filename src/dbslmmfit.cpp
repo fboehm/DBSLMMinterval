@@ -491,8 +491,10 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::estBlock(
                         mat geno_l, 
                         vec z_s, 
                         vec z_l, 
-                        vec &beta_s, 
-                        vec &beta_l) {
+                        //vec &beta_s, 
+                        //vec &beta_l) {
+                        vec beta_s,
+                        vec beta_l) {
 	
 	// LD matrix 
 	// mat SIGMA_ls = geno_l.t() * geno_s; 
@@ -546,7 +548,7 @@ arma::mat DBSLMMFIT::estBlock(
                         double sigma_s, 
                         mat geno_s, 
                         vec z_s, 
-                        vec &beta_s) {
+                        vec beta_s) {
 	
 	// LD matrix 
 	// mat SIGMA_ss = geno_s.t() * geno_s; 
