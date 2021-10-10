@@ -261,10 +261,11 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 	int n_s = cIO.readSumm(cPar.s, separate, summ_s);  // ?populate summ_s?
 	//readSumm is defined in scr/dtpr.cpp
 	// What is n_s?? clearly, an integer, but is it the number of small effect snps? or is it a number of subjects, 
-	// like the number of subjects used to get small effect snps?
+	// like the number of subjects used to get small effect snps? No. 
+	//n_s is the number of snps
 	vector <POS> inter_s; // what does POS mean here? I get that it's the class for inter_s, but what exactly does it mean?
 	// see scr/dtpr.hpp for definition of POS class
-	bool badsnp_s[n_s] = {false}; 
+	bool badsnp_s[n_s] = {false}; // declare a vector badsnp_s of length n_s
 	cSP.matchRef(summ_s, dat_bim, inter_s, cPar.mafMax, badsnp_s); //matchRef is defined in scr/dtpr.cpp
 
 /*	cout << "After filtering, " << inter_s.size() << " small effect SNPs are selected." << endl;
