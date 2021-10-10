@@ -358,8 +358,6 @@ int DBSLMMFIT::calcBlock(int n_obs,
 		for(int i = 0; i < num_l_block; i++) 
 			// z_l(i) = info_l_block[i]->z;
 			z_l(i) = info_l_block[i].z;
-
-
 		// large effect matrix
 		mat geno_l = zeros<mat>(n_obs, num_l_block); //geno_l gets filled to become Xl matrix (in notation of supplemental materials)
 		for (int i = 0; i < num_l_block; ++i) {
@@ -372,11 +370,21 @@ int DBSLMMFIT::calcBlock(int n_obs,
 		}
 		
 			}
-	return 0; 
+	arma::vec beta_l= zeros<vec>(num_l_block);
+	
+	std::tuple<arma::mat, arma::mat, arma::mat > out = estBlock(n_obs, 
+                                                             sigma_s, 
+                                                             geno_s, 
+                                                             geno_l, 
+                                                             z_s, 
+                                                             z_l, 
+                                                             &beta_s,
+                                                             &beta_l)
+	return out; 
 }
 
 // estimate only small effect for each block
-int DBSLMMFIT::calcBlock(int n_obs, 
+arma::mat DBSLMMFIT::calcBlock(int n_obs, 
                          double sigma_s, 
                          vector<int> idv, 
                          string bed_str, 
@@ -413,7 +421,14 @@ int DBSLMMFIT::calcBlock(int n_obs,
 		cSP.nomalizeVec(geno); // then, normalize geno
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
-	return 0; 
+	arma::vec beta_s= zeros<vec>(num_s_block);
+	arma::mat out = estBlock(n_obs, 
+                      sigma_s, 
+                      geno_s, 
+                      z_s, 
+                      &beta_s);//returns Sigma_ss for a block
+	
+	return out; 
 }
 
 // solve the equation Ax=b, x is a variables
