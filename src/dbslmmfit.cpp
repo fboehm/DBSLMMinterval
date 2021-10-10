@@ -39,7 +39,7 @@ using namespace arma;
 //' @param n_obs sample size of the data
 //' @param sigma_s the estimate for sigma_s^2
 //' @param num_block number of blocks in the genome
-//' @param idv 
+//' @param idv indicator vector for subjects
 //' @param bed_str file path for the plink bed file
 //' @param info_s small effect SNP info object
 //' @param info_l large effect SNP info object
@@ -60,34 +60,7 @@ int DBSLMMFIT::est(
                    vector <INFO> info_l, //one entry per large effect SNP
                    int thread, 
                    vector <EFF> &eff_s, 
-                   vector <EFF> &eff_l,
-                   string fam_file,
-                   unsigned int seed,
-                   double test_proportion){ //Fred added fam_file so that we can read in the phenotype data
-	// split subjects into training and test sets
-	//specify proportion of n_obs that goes into test set
-  arma::Col<arma::uword> test_indices = get_test_indices(n_obs, 
-                                                         test_proportion,
-                                                         seed);
-  arma::Col<arma::uword> training_indices = get_training_indices(test_indices, 
-                                                                 n_obs);
-  // read phenotype data
-  std::tuple<vector<string>, vector<string> > pheno_struct = read_pheno(fam_file, 6);
-  // extract id and pheno from pheno_struct
-  std::vector<string> id = std::get<0>(pheno_struct);
-  std::vector<string> pheno_string = std::get<1>(pheno_struct);
-  //convert pheno to numeric vector
-  std::vector<double> pheno_numeric = convert_string_vector_to_double_vector(pheno_string);
-  // convert to arma::vec
-  arma::vec pheno_arma = arma::conv_to<arma::vec>::from(pheno_numeric);
-  //mean center pheno
-  arma::vec y = center_vector(pheno_arma);
-  arma::vec y_training = subset(y, training_indices);
-  arma::vec y_test = subset(y, test_indices);
-  //save y_test as csv
-  y_test.save("y_test.csv", arma_ascii);
-  
-  //return to Sheng's code
+                   vector <EFF> &eff_l){ 
 	// get the maximum number of each block
 	int count_s = 0, count_l = 0; //set counters at zero
 	vec num_s = zeros<vec>(num_block), num_l = zeros<vec>(num_block); //num_s & num_l have one entry per block 
@@ -134,11 +107,11 @@ int DBSLMMFIT::est(
 	// loop 
 	// vector < vector <INFO*> > info_s_Block(B_MAX, vector <INFO*> ((int)len_s)), info_l_Block(B_MAX, vector <INFO*> ((int)len_l));
 	vector < vector <INFO> > info_s_Block(B_MAX, 
-                                       vector <INFO> ((int)len_s)), 
+                                        vector <INFO> ((int)len_s)), 
                            info_l_Block(B_MAX, 
                                         vector <INFO> ((int)len_l)); //declare info_l_Block & info_s_Block
 	vector < vector <EFF> > eff_s_Block(B_MAX, 
-                                     vector <EFF> ((int)len_s)), 
+                                      vector <EFF> ((int)len_s)), 
                           eff_l_Block(B_MAX, 
                                       vector <EFF> ((int)len_l)); //declare eff_l_Block & eff_s_Block
 	vector <int> num_s_vec, num_l_vec; //declare num_s_vec & num_l_vec
@@ -196,11 +169,8 @@ int DBSLMMFIT::est(
 						  num_s_vec[b], 
               num_l_vec[b], 
               eff_s_Block[b], 
-              eff_l_Block[b],
-              y_training, 
-              training_indices, 
-              test_indices, 
-              i);
+              eff_l_Block[b]
+			  );
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -231,32 +201,7 @@ int DBSLMMFIT::est(
                    string bed_str,
           				 vector <INFO> info_s, 
           				 int thread, 
-          				 vector <EFF> &eff_s, 
-          				 string fam_file,
-          				 unsigned int seed,
-          				 double test_proportion){
-  // split subjects into training and test sets
-  //specify proportion of n_obs that goes into test set
-  arma::Col<arma::uword> test_indices = get_test_indices(n_obs, 
-                                                         test_proportion,
-                                                         seed);
-  arma::Col<arma::uword> training_indices = get_training_indices(test_indices, 
-                                                                 n_obs);
-  // read phenotype data
-  std::tuple<vector<string>, vector<string> > pheno_struct = read_pheno(fam_file, 6);
-  // extract id and pheno from pheno_struct
-  std::vector<string> id = std::get<0>(pheno_struct);
-  std::vector<string> pheno_string = std::get<1>(pheno_struct);
-  //convert pheno to numeric vector
-  std::vector<double> pheno_numeric = convert_string_vector_to_double_vector(pheno_string);
-  // convert to arma::vec
-  arma::vec pheno_arma = arma::conv_to<arma::vec>::from(pheno_numeric);
-  //mean center pheno
-  arma::vec y = center_vector(pheno_arma);
-  arma::vec y_training = subset(y, training_indices);
-  arma::vec y_test = subset(y, test_indices);
-  //save y_test as csv
-  y_test.save("y_test.csv", arma_ascii);
+          				 vector <EFF> &eff_s ){
   //return to Sheng's code
   
 	// get the maximum number of each block
@@ -327,11 +272,7 @@ int DBSLMMFIT::est(
               bed_str, 
               info_s_Block[b],
 						  num_s_vec[b], 
-              eff_s_Block[b], 
-              y_training, 
-              training_indices, 
-              test_indices, 
-              i);
+              eff_s_Block[b]);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -370,11 +311,7 @@ int DBSLMMFIT::calcBlock(int n_obs,
                          int num_s_block, 
                          int num_l_block, 
                          vector <EFF> &eff_s_block, 
-                         vector <EFF> &eff_l_block,
-                         arma::vec y_training,
-                         arma::Col<arma::uword> training_indices, 
-                         arma::Col<arma::uword> test_indices, 
-                         int iter_number)
+                         vector <EFF> &eff_l_block)
   {
 	SNPPROC cSP;
 	IO cIO; 
@@ -433,31 +370,8 @@ int DBSLMMFIT::calcBlock(int n_obs,
 			cSP.nomalizeVec(geno);
 			geno_l.col(i) = geno;
 		}
-		/* INSERT MY ASYMPTOTIC VAR CALC HERE*/
-		//split geno_l and geno_s into training and test sets
-		arma::mat geno_l_training = subset(geno_l, training_indices);
-		arma::mat geno_l_test = subset(geno_l, test_indices);
-		arma::mat geno_s_training = subset(geno_s, training_indices);
-		arma::mat geno_s_test = subset(geno_s, test_indices);
 		
-		// calculate var(\hat\tilde y)
-		arma::mat asymptotic_var = calc_asymptotic_variance(geno_l_training, 
-                                                       geno_s_training, 
-                                                       geno_l_test,
-                                                       geno_s_test,
-                                                       sigma_s,
-                                                       y_training);
-    // asymptotic_var should be n_test by n_test symmetric psd matrix, ie covar matrix
-    //store only diagonal elements of asymptotic_var, asymptotic_var.diag()
-    arma::vec avar_diag = asymptotic_var.diag();
-    // define outfile
-    std::string iter_number_string = to_string(iter_number);
-    std::string outfile = iter_number_string + ".csv";
-    //save diagonal as csv
-    avar_diag.save(outfile, arma_ascii); 
-    
-		/* END OF FREDS ASYMPTOTIC VAR CALC CODE */
-	}
+			}
 	return 0; 
 }
 
@@ -468,11 +382,7 @@ int DBSLMMFIT::calcBlock(int n_obs,
                          string bed_str, 
               					 vector <INFO> info_s_block_full, 
             						 int num_s_block, 
-            						 vector <EFF> &eff_s_block,
-            						 arma::vec y_training,
-            						 arma::Col<arma::uword> training_indices, 
-            						 arma::Col<arma::uword> test_indices, 
-            						 int iter_number){
+            						 vector <EFF> &eff_s_block){
 	SNPPROC cSP; // declare new SNPPROC object, cSP. Below, we'll need to populate cSP.
 	IO cIO; //declare IO object, cIO
 	ifstream bed_in(bed_str.c_str(), ios::binary);//ios::binary means "open in binary mode". bed_str is an argument to the function, presumably something like the file path??
@@ -503,33 +413,6 @@ int DBSLMMFIT::calcBlock(int n_obs,
 		cSP.nomalizeVec(geno); // then, normalize geno
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
-	/* INSERT ASYMPTOTIC VARIANCE CALCS HERE */
-	//split geno_l and geno_s into training and test sets
-	arma::mat geno_s_training = subset(geno_s, training_indices);
-	arma::mat geno_s_test = subset(geno_s, test_indices);
-	
-	// calculate var(\hat\tilde y)
-/*	arma::mat asymptotic_var = calc_asymptotic_variance(geno_l_training, 
-                                                     geno_s_training, 
-                                                     geno_l_test,
-                                                     geno_s_test,
-                                                     sigma_s,
-                                                     y_training);
-
-	// asymptotic_var should be n_test by n_test symmetric psd matrix, ie covar matrix
-	//store only diagonal elements of asymptotic_var, asymptotic_var.diag()
-	arma::vec avar_diag = asymptotic_var.diag();
-	// define outfile
-	std::string iter_number_string = to_string(iter_number);
-	std::string outfile = iter_number_string + ".csv";
-	//save diagonal as csv
-	avar_diag.save(outfile, arma_ascii); 
-NEED METHODS FOR calculating asymptotic var when a block has no large effects */ 
-
-
-	
-	
-	/* END ASYMPTOTIC VAR CALCS */
 	return 0; 
 }
 
@@ -600,14 +483,14 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 //' @param beta_s coefficient estimates for small effect SNPs in this block
 //' @param beta_l coefficient estimates for large effect SNPs in this block 
 
-int DBSLMMFIT::estBlock(
+std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::estBlock(
                         int n_obs, 
                         double sigma_s, 
                         mat geno_s, 
                         mat geno_l, 
                         vec z_s, 
                         vec z_l, 
-                        vec &beta_s, 
+                        vec &beta_s,
                         vec &beta_l) {
 	
 	// LD matrix 
@@ -625,7 +508,7 @@ int DBSLMMFIT::estBlock(
 	SIGMA_ll *= tau/(double)n_obs;
 	vec DIAG_l(geno_l.n_cols, fill::ones);
 	DIAG_l *= (1.0-tau);
-	SIGMA_ll += diagmat(DIAG_l);
+	SIGMA_ll += diagmat(DIAG_l); //arma::diagmat
 	mat SIGMA_ss = geno_s.t() * geno_s; 
 	SIGMA_ss *= tau/(double)n_obs;
 	vec DIAG_s(geno_s.n_cols, fill::ones);
@@ -652,10 +535,12 @@ int DBSLMMFIT::estBlock(
 	beta_s = sqrt(n_obs) * z_s - (double)n_obs * SIGMA_ls.t() * beta_l - SIGMA_ss_z_s_SIGMA_sl_beta_l; 
 	beta_s *= sigma_s;
 	
-	return 0; 
+	auto result = std::make_tuple(SIGMA_ll, SIGMA_ls, SIGMA_ss);
+	return(result);
+	//return 0; 
 }
 
-int DBSLMMFIT::estBlock(
+arma::mat DBSLMMFIT::estBlock(
                         int n_obs, 
                         double sigma_s, 
                         mat geno_s, 
@@ -681,5 +566,5 @@ int DBSLMMFIT::estBlock(
 	vec z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl = z_s - SIGMA_ss_SIGMA_ss_inv_z_s; 
 	beta_s = sqrt(n_obs) * sigma_s * z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl; 
 	
-	return 0; 
+	return SIGMA_ss; 
 }

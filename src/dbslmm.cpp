@@ -229,7 +229,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 	  exit(1);
 	}
 	if (cPar.test_proportion <= 0 || cPar.test_proportion >= 1) {
-	  cerr << "ERROR: " << cPar.seed << " must be positive and less than 1" << endl;
+	  cerr << "ERROR: " << cPar.test_proportion << " must be positive and less than 1" << endl;
 	  exit(1);
 	}
 	
@@ -333,9 +333,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             info_l, 
             cPar.t, 
             eff_s, 
-            eff_l, 
-            fam_file, 
-            cPar.seed, cPar.test_proportion); 
+            eff_l); 
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;
 
@@ -362,7 +360,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
 		double t_fitting = cIO.getWalltime();
 		double sigma_s = cPar.h / (double)cPar.nsnp;
 		cout << "Fitting model..." << endl;
-		string fam_file = cPar.filestem + ".fam";
+		//string fam_file = cPar.filestem + ".fam";
 		cDBSF.est( 
             cPar.n, 
             sigma_s, 
@@ -371,11 +369,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
             bed_str, 
             info_s, 
             cPar.t, 
-            eff_s, 
-            fam_file, 
-            cPar.seed,
-            cPar.test_proportion
-            ); //call est for small effects only!
+            eff_s); //call est for small effects only!
 		double time_fitting = cIO.getWalltime() - t_fitting;
 		cout << "Fitting time: " << time_fitting << " seconds." << endl;
 

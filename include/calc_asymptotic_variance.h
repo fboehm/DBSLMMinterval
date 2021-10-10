@@ -9,25 +9,30 @@
 #include <algorithm> 
 
 
-arma::mat calc_asymptotic_variance(arma::mat Xl_training, 
-                                   arma::mat Xs_training, 
+arma::mat calc_asymptotic_variance(arma::mat Sigma_ll, 
+                                   arma::mat Sigma_ls, 
+                                   arma::mat Sigma_ss, 
+                                   double sigma2_s, 
+                                   unsigned int n,
                                    arma::mat Xl_test, 
-                                   arma::mat Xs_test,
-                                   double sigma2_s,
-                                   arma::vec y_training);
-arma::mat calc_Hinv(arma::mat Xs_training, 
-                    double sigma2_s);
-arma::mat calc_var_betal(arma::mat Xl, 
-                      arma::mat Hinv, 
-                      arma::vec y);
-  
+                                   arma::mat Xs_test);
 
-arma::mat calc_var_betas(arma::mat Xl, 
-                         arma::mat Xs,
-                         arma::mat Hinv,
-                         double sigma2_s,
-                         arma::vec y,
-                         arma::mat var_bl);
+arma::mat calc_var_betal(arma::mat Sigma_ll, 
+                         arma::mat Sigma_ls, 
+                         arma::mat Sigma_ss,
+                         arma::mat A_inverse,
+                         unsigned int n);
+
+  arma::mat calc_var_betas(arma::mat Sigma_ss, 
+                           arma::mat Sigma_ls,
+                           arma::mat A_inverse,
+                           double sigma2_s,
+                           unsigned int n,
+                           arma::mat var_bl);
+
+arma::mat calc_A_inverse(arma::mat Sigma_ss, 
+                         double sigma2_s, 
+                         unsigned int n);
 
 
 std::tuple<std::vector<std::string>, std::vector<std::string> > read_pheno(std::string file_path, 
