@@ -302,7 +302,7 @@ int DBSLMMFIT::est(
 //' @param eff_s_block effects object for small effects per block? 
 //' @param eff_l_block effects object for large effects per block?
 // estimate large and small effect for each block
-int DBSLMMFIT::calcBlock(int n_obs, 
+std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_obs, 
                          double sigma_s, 
                          vector<int> idv, 
                          string bed_str, 
