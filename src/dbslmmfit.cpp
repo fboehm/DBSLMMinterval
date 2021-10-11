@@ -350,7 +350,7 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
 	
 	vec beta_s = zeros<vec>(num_s_block); 
 	// INFO large effect SNPs 
-	if (num_l_block != 0){
+	if (num_l_block != 0){ //why is this needed??? wouldn't we only be using this function when num_l_block >0??
 		// vector <INFO*> info_l_block(num_l_block);
 		vector <INFO> info_l_block(num_l_block);
 		for (int i = 0; i < num_l_block; i++) 
@@ -370,19 +370,27 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
 			cSP.nomalizeVec(geno);
 			geno_l.col(i) = geno;
 		}
+		arma::vec beta_l= zeros<vec>(num_l_block);
 		
+		std::tuple<arma::mat, arma::mat, arma::mat > out = estBlock(n_ref,
+                                                              n_obs, 
+                                                              sigma_s, 
+                                                              geno_s, 
+                                                              geno_l, 
+                                                              z_s, 
+                                                              z_l, 
+                                                              beta_s,
+                                                              beta_l);
 			}
-	arma::vec beta_l= zeros<vec>(num_l_block);
-	
-	std::tuple<arma::mat, arma::mat, arma::mat > out = estBlock(n_ref,
-                                                             n_obs, 
-                                                             sigma_s, 
-                                                             geno_s, 
-                                                             geno_l, 
-                                                             z_s, 
-                                                             z_l, 
-                                                             &beta_s,
-                                                             &beta_l)
+	if (num_l_block == 0){
+	  arma::mat pre = estBlock(n_ref, 
+                            n_obs, 
+                            sigma_s, 
+                            geno_s, 
+                            z_s, 
+                            beta_s);//returns Sigma_ss for a block
+	  std::tuple<arma::mat, arma::mat, arma::mat > out = std::make_tuple(pre, pre, pre);
+	}
 	return out; 
 }
 
