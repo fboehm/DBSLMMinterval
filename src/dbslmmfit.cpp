@@ -315,6 +315,7 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                          vector <EFF> &eff_s_block, 
                          vector <EFF> &eff_l_block)
   {
+  std::tuple<arma::mat, arma::mat, arma::mat > out;
 	SNPPROC cSP;
 	IO cIO; 
 	ifstream bed_in(bed_str.c_str(), ios::binary);
@@ -372,7 +373,7 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
 		}
 		arma::vec beta_l= zeros<vec>(num_l_block);
 		
-		std::tuple<arma::mat, arma::mat, arma::mat > out = estBlock(n_ref,
+		out = estBlock(n_ref,
                                                               n_obs, 
                                                               sigma_s, 
                                                               geno_s, 
@@ -389,7 +390,7 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                             geno_s, 
                             z_s, 
                             beta_s);//returns Sigma_ss for a block
-	  std::tuple<arma::mat, arma::mat, arma::mat > out = std::make_tuple(pre, pre, pre);
+	  out = std::make_tuple(pre, pre, pre);
 	}
 	return out; 
 }
