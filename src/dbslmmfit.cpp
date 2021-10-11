@@ -431,7 +431,7 @@ arma::mat DBSLMMFIT::calcBlock(int n_ref,
                       sigma_s, 
                       geno_s, 
                       z_s, 
-                      &beta_s);//returns Sigma_ss for a block
+                      beta_s);//returns Sigma_ss for a block
 	
 	return out; 
 }
