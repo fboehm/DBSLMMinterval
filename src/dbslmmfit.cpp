@@ -50,7 +50,7 @@ using namespace arma;
 //' @param seed a seed (positive integer) for the pseudo RNG
 //' @return zero is returned
 // estimate large and small effect
-int DBSLMMFIT::est(
+int DBSLMMFIT::est(int n_ref,
                    int n_obs, 
                    double sigma_s, 
                    int num_block, 
@@ -160,7 +160,8 @@ int DBSLMMFIT::est(
 #pragma omp parallel for schedule(dynamic)
 			for (int b = 0; b < B; b++){
 			  std::tuple<arma::mat, arma::mat, arma::mat > out = calcBlock(
-              n_obs, 
+			    n_ref,
+			    n_obs, 
               sigma_s, 
               idv, 
               bed_str, 
@@ -265,7 +266,7 @@ int DBSLMMFIT::est(int n_ref,
 			omp_set_num_threads(thread);
 #pragma omp parallel for schedule(dynamic)
 			for (int b = 0; b < B; b++){
-			  arma::mat out = calcBlock(
+			  arma::mat out = calcBlock(n_ref,
               n_obs, 
               sigma_s, 
               idv, 
@@ -302,7 +303,8 @@ int DBSLMMFIT::est(int n_ref,
 //' @param eff_s_block effects object for small effects per block? 
 //' @param eff_l_block effects object for large effects per block?
 // estimate large and small effect for each block
-std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_obs, 
+std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref, 
+                                                                  int n_obs, 
                          double sigma_s, 
                          vector<int> idv, 
                          string bed_str, 
@@ -372,7 +374,8 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_obs,
 			}
 	arma::vec beta_l= zeros<vec>(num_l_block);
 	
-	std::tuple<arma::mat, arma::mat, arma::mat > out = estBlock(n_obs, 
+	std::tuple<arma::mat, arma::mat, arma::mat > out = estBlock(n_ref,
+                                                             n_obs, 
                                                              sigma_s, 
                                                              geno_s, 
                                                              geno_l, 
@@ -384,7 +387,8 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_obs,
 }
 
 // estimate only small effect for each block
-arma::mat DBSLMMFIT::calcBlock(int n_obs, 
+arma::mat DBSLMMFIT::calcBlock(int n_ref,
+                               int n_obs, 
                          double sigma_s, 
                          vector<int> idv, 
                          string bed_str, 
@@ -422,7 +426,8 @@ arma::mat DBSLMMFIT::calcBlock(int n_obs,
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
 	arma::vec beta_s= zeros<vec>(num_s_block);
-	arma::mat out = estBlock(n_obs, 
+	arma::mat out = estBlock(n_ref, 
+                          n_obs, 
                       sigma_s, 
                       geno_s, 
                       z_s, 
@@ -499,7 +504,8 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 //' @param beta_l coefficient estimates for large effect SNPs in this block 
 
 std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::estBlock(
-                        int n_obs, 
+    int n_ref, 
+    int n_obs, 
                         double sigma_s, 
                         mat geno_s, 
                         mat geno_l, 
@@ -555,7 +561,7 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::estBlock(
 	//return 0; 
 }
 
-arma::mat DBSLMMFIT::estBlock(
+arma::mat DBSLMMFIT::estBlock(int n_ref,
                         int n_obs, 
                         double sigma_s, 
                         mat geno_s, 
