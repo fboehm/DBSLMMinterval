@@ -159,7 +159,7 @@ int DBSLMMFIT::est(
 			omp_set_num_threads(thread);
 #pragma omp parallel for schedule(dynamic)
 			for (int b = 0; b < B; b++){
-				calcBlock(
+			  std::tuple<arma::mat, arma::mat, arma::mat > out = calcBlock(
               n_obs, 
               sigma_s, 
               idv, 
@@ -265,7 +265,7 @@ int DBSLMMFIT::est(
 			omp_set_num_threads(thread);
 #pragma omp parallel for schedule(dynamic)
 			for (int b = 0; b < B; b++){
-				calcBlock(
+			  arma::mat out = calcBlock(
               n_obs, 
               sigma_s, 
               idv, 
