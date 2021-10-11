@@ -153,215 +153,200 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
 }
 
 void DBSLMM::BatchRun(PARAM &cPar) {
-
-	SNPPROC cSP;
-	IO cIO;
-	DBSLMMFIT cDBSF;
-
-	// input check
-	// cout << "Options: " << endl;
-	// cout << "-s:      " << cPar.s << endl;
-	// cout << "-l:      " << cPar.l << endl;
-	// cout << "-r:      " << cPar.r << endl;
-	// cout << "-nsnp:   " << cPar.nsnp << endl;
-	// cout << "-n:      " << cPar.n << endl;
-	// cout << "-mafMax: " << cPar.mafMax << endl;
-	// cout << "-b:      " << cPar.b << endl;
-	// cout << "-h:      " << cPar.h << endl;
-	// cout << "-t:      " << cPar.t << endl;
-	// cout << "-eff:    " << cPar.eff << endl;
-	
-	// check files
-	string ref_fam_str = cPar.filestem + ".fam"; //next line below declares the ifstream objects, including an ifstream object for reading the fam file! 
-	ifstream seffstream(cPar.s.c_str()), leffstream(cPar.l.c_str()), reffstream(ref_fam_str.c_str()), beffstream(cPar.b.c_str());
-	if (cPar.s.size() == 0) {
-		cerr << "ERROR: -s is no parameter!" << endl;
-		exit(1);
-	}
-	if (!beffstream) {
-		cerr << "ERROR: " << cPar.b << " dose not exist!" << endl;
-		exit(1);
-	}
-	if (!seffstream) {
-		cerr << "ERROR: " << cPar.s << " dose not exist!" << endl;
-		exit(1);
-	}
-/*	if (!reffstream) {
-		cerr << "ERROR: " << cPar.r << " dose not exist!" << endl;
-		exit(1);
-}*/
-	if (cPar.b.size() == 0) {
-		cerr << "ERROR: -b is no parameter!" << endl;
-		exit(1);
-	}
-	if (cPar.filestem.size() == 0) {
-		cerr << "ERROR: " << cPar.filestem << " dose not exist!" << endl;
-		exit(1);
-	}
-	if (cPar.h > 1 || cPar.h < 0){
-		cerr << "ERROR: -h is not correct (0, 1)!" << endl;
-		exit(1);
-	}
-	if (cPar.t > 100 || cPar.t < 1){
-		cerr << "ERROR: -t is not correct (1, 100)!" << endl;
-		exit(1);
-	}
-	if (cPar.seed <= 0) {
-	  cerr << "ERROR: " << cPar.seed << " must be positive" << endl;
-	  exit(1);
-	}
-	if (cPar.test_proportion <= 0 || cPar.test_proportion >= 1) {
-	  cerr << "ERROR: " << cPar.test_proportion << " must be positive and less than 1" << endl;
-	  exit(1);
-	}
-	
-	// get sample size of reference panel 
-	char separate[] = "\t";
-	cout << "Reading PLINK FAM file from [" << cPar.filestem << ".fam]" << endl;
-	int n_dat = cIO.getRow(ref_fam_str); //n_ref is sample size of reference panel!
-	cout << n_dat << " individuals to be included from data FAM file." << endl;
-	
-	// get SNP of reference panel
-	cout << "Reading PLINK BIM file from [" << cPar.filestem << ".bim]" << endl;
-	map <string, ALLELE> dat_bim;
-	bool constr = true; 
-	if (abs(cPar.mafMax-1.0) < 1e-10){
-		constr = false; 
-	}
-	cIO.readBim(n_dat, cPar.filestem, separate, dat_bim, constr); //read BIM for ref data
-	int num_snp_dat = dat_bim.size(); //num_snp_ref is number of SNPs in the reference data
-	cout << num_snp_dat << " SNPs to be included from BIM file." << endl;
-
-	// input block file
-	vector <BLOCK> block_dat; 
-	cIO.readBlock(cPar.b, separate, block_dat); //populate block_dat
-	//readBlock is defined in scr/dtpr.cpp 
- 
-	// input small effect summary data
-	cout << "Reading summary data of small effect SNPs from [" << cPar.s << "]" << endl;
-	vector <SUMM> summ_s;
-	int n_s = cIO.readSumm(cPar.s, separate, summ_s);  // ?populate summ_s?
-	//readSumm is defined in scr/dtpr.cpp
-	// What is n_s?? clearly, an integer, but is it the number of small effect snps? or is it a number of subjects, 
-	// like the number of subjects used to get small effect snps? No. 
-	//n_s is the number of snps
-	vector <POS> inter_s; // what does POS mean here? I get that it's the class for inter_s, but what exactly does it mean?
-	// see scr/dtpr.hpp for definition of POS class
-	bool badsnp_s[n_s] = {false}; // declare a vector badsnp_s of length n_s
-	cSP.matchRef(summ_s, dat_bim, inter_s, cPar.mafMax, badsnp_s); //matchRef is defined in scr/dtpr.cpp
-
-/*	cout << "After filtering, " << inter_s.size() << " small effect SNPs are selected." << endl;
-*/
- 	vector <INFO> info_s;
-
-/*	int num_block_s = cSP.addBlock(inter_s, block_dat, info_s); //addBlock is defined in scr/dtpr.cpp
-	*/
-  int num_block_s = cSP.addBlock(inter_s, block_dat, info_s); // populate info_s??
-  //addBlock is defined in scr/dtpr.cpp
-	// output samll effect badsnps 
-	string badsnps_str = cPar.eff + ".badsnps"; 
-	ofstream badsnpsFout(badsnps_str.c_str());
-	for (size_t i = 0; i < summ_s.size(); ++i) {
-		if (badsnp_s[i] == false)
-			badsnpsFout << summ_s[i].snp << " " << 0 << endl;
-	}
-	clearVector(summ_s);
-
-	// large effect
-	vector <POS> inter_l;
-	vector <INFO> info_l; 
-	if (leffstream) {
-		// input large effect summary data
-		cout << "Reading summary data of large effect SNPs from [" << cPar.l << "]" << endl;
-		vector <SUMM> summ_l;
-		int n_l = cIO.readSumm(cPar.l, separate, summ_l);
-		// vector <POS> inter_l;
-		bool badsnp_l[n_l] = {false};
-		cSP.matchRef(summ_l, dat_bim, inter_l, cPar.mafMax, badsnp_l);
-		if (inter_l.size() != 0){
-			int num_block_l = cSP.addBlock(inter_l, block_dat, info_l); 
-			cout << "After filtering, " << inter_l.size() << " large effect SNPs are selected." << endl;
-		} else {
-			cout << "After filtering, no large effect SNP is selected." << endl;
-		}
-		// output large effect badsnps 
-		for (size_t i = 0; i < summ_l.size(); ++i) {
-			if (badsnp_l[i] == false){
-				badsnpsFout << summ_l[i].snp << " " << 1 << endl;
-			}
-		}
-		clearVector(summ_l);
-	}
-
-	// output stream
-	string eff_str = cPar.eff + ".txt"; 
-	ofstream effFout(eff_str.c_str());
-	if (inter_l.size() != 0){
-		// fit model
-		vector <EFF> eff_s, eff_l; 
-		vector<int> idv(n_dat);
-		for (int i = 0; i < n_dat; i++) idv[i] = 1; 
-		string bed_str = cPar.filestem + ".bed";
-		double t_fitting = cIO.getWalltime();
-		double sigma_s = cPar.h / (double)cPar.nsnp; // this tells us that sigma_s *is* $\hat\sigma_s^2$!
-		cout << "Fitting model..." << endl;
-		string fam_file = cPar.filestem + ".fam";
-		cDBSF.est(
-            cPar.n, 
-            sigma_s, 
-            num_block_s, 
-            idv, 
-            bed_str, 
-            info_s, 
-            info_l, 
-            cPar.t, 
-            eff_s, 
-            eff_l); 
-		double time_fitting = cIO.getWalltime() - t_fitting;
-		cout << "Fitting time: " << time_fitting << " seconds." << endl;
-
-		// output effect 
-		for (size_t i = 0; i < eff_l.size(); ++i) {
-			double beta_l_noscl = eff_l[i].beta / sqrt(2 * eff_l[i].maf * (1-eff_l[i].maf));//this is like "no scaling" for beta
-			if (eff_l[i].snp != "rs" && isinf(beta_l_noscl) == false)
-				effFout << eff_l[i].snp << " " << eff_l[i].a1 << " " << eff_l[i].beta << " " << beta_l_noscl << " " << 1 << endl; 
-		}
-		
-		for (size_t i = 0; i < eff_s.size(); ++i) { 
-			double beta_s_noscl = eff_s[i].beta / sqrt(2 * eff_s[i].maf * (1-eff_s[i].maf));
-			if(eff_s[i].snp.size() != 0 && isinf(beta_s_noscl) == false)
-				effFout << eff_s[i].snp << " " << eff_s[i].a1 << " " << eff_s[i].beta << " " << beta_s_noscl << " " << 0 << endl; 
-		}
-		effFout.close();
-	}
-	if (inter_l.size() == 0 || !leffstream){
-		// fit model, ie, fit for small effects only!
-		vector <EFF> eff_s; //declare eff_s as object with class EFF
-		vector<int> idv(n_dat);//declare idv as a vector of integers with length n_ref
-		for (int i = 0; i < n_dat; i++) idv[i] = 1; //set every entry of idv to value 1 (integer)
-		string bed_str = cPar.filestem + ".bed";
-		double t_fitting = cIO.getWalltime();
-		double sigma_s = cPar.h / (double)cPar.nsnp;
-		cout << "Fitting model..." << endl;
-		//string fam_file = cPar.filestem + ".fam";
-		cDBSF.est( 
-            cPar.n, 
-            sigma_s, 
-            num_block_s, 
-            idv, 
-            bed_str, 
-            info_s, 
-            cPar.t, 
-            eff_s); //call est for small effects only!
-		double time_fitting = cIO.getWalltime() - t_fitting;
-		cout << "Fitting time: " << time_fitting << " seconds." << endl;
-
-		// output effect 
-		for (size_t i = 0; i < eff_s.size(); ++i) { 
-			double beta_s_noscl = eff_s[i].beta / sqrt(2 * eff_s[i].maf * (1-eff_s[i].maf));
-			if(eff_s[i].snp.size() != 0 && isinf(beta_s_noscl) == false)
-				effFout << eff_s[i].snp << " " << eff_s[i].a1 << " " << eff_s[i].beta << " " << beta_s_noscl << " " << 0 << endl; 
-		}
-	}
-	return;
+  
+  SNPPROC cSP; //declare objects, prefixed with "c"
+  IO cIO;
+  DBSLMMFIT cDBSF;
+  
+  // input check
+  // cout << "Options: " << endl;
+  // cout << "-s:      " << cPar.s << endl;
+  // cout << "-l:      " << cPar.l << endl;
+  // cout << "-r:      " << cPar.r << endl;
+  // cout << "-nsnp:   " << cPar.nsnp << endl;
+  // cout << "-n:      " << cPar.n << endl;
+  // cout << "-mafMax: " << cPar.mafMax << endl;
+  // cout << "-b:      " << cPar.b << endl;
+  // cout << "-h:      " << cPar.h << endl;
+  // cout << "-t:      " << cPar.t << endl;
+  // cout << "-eff:    " << cPar.eff << endl;
+  
+  // check files
+  string ref_fam_str = cPar.r + ".fam"; //next line below declares the ifstream objects, including an ifstream object for reading the fam file! 
+  ifstream seffstream(cPar.s.c_str()), leffstream(cPar.l.c_str()), reffstream(ref_fam_str.c_str()), beffstream(cPar.b.c_str());
+  if (cPar.s.size() == 0) {
+    cerr << "ERROR: -s is no parameter!" << endl;
+    exit(1);
+  }
+  if (!beffstream) {
+    cerr << "ERROR: " << cPar.b << " dose not exist!" << endl;
+    exit(1);
+  }
+  if (!seffstream) {
+    cerr << "ERROR: " << cPar.s << " dose not exist!" << endl;
+    exit(1);
+  }
+  if (!reffstream) {
+    cerr << "ERROR: " << cPar.r << " dose not exist!" << endl;
+    exit(1);
+  }
+  if (cPar.b.size() == 0) {
+    cerr << "ERROR: -b is no parameter!" << endl;
+    exit(1);
+  }
+  if (cPar.r.size() == 0) {
+    cerr << "ERROR: " << cPar.r << " dose not exist!" << endl;
+    exit(1);
+  }
+  if (cPar.h > 1 || cPar.h < 0){
+    cerr << "ERROR: -h is not correct (0, 1)!" << endl;
+    exit(1);
+  }
+  if (cPar.t > 100 || cPar.t < 1){
+    cerr << "ERROR: -t is not correct (1, 100)!" << endl;
+    exit(1);
+  }
+  
+  // get sample size of reference panel 
+  char separate[] = "\t";
+  cout << "Reading PLINK FAM file from [" << cPar.r << ".fam]" << endl;
+  int n_ref = cIO.getRow(ref_fam_str); //n_ref is sample size of reference panel!
+  cout << n_ref << " individuals to be included from reference FAM file." << endl;
+  
+  // get SNP of reference panel
+  cout << "Reading PLINK BIM file from [" << cPar.r << ".bim]" << endl;
+  map <string, ALLELE> ref_bim;
+  bool constr = true; 
+  if (abs(cPar.mafMax-1.0) < 1e-10){
+    constr = false; 
+  }
+  cIO.readBim(n_ref, cPar.r, separate, ref_bim, constr); //read BIM for ref data
+  int num_snp_ref = ref_bim.size(); //num_snp_ref is number of SNPs in the reference data
+  cout << num_snp_ref << " SNPs to be included from reference BIM file." << endl;
+  
+  // input block file
+  vector <BLOCK> block_dat; 
+  cIO.readBlock(cPar.b, separate, block_dat); //readBlock is defined in scr/dtpr.cpp. It reads the files that contain the blocking information 
+  //cPar.b is the --block option, ie, the file containing the blocking information, ie, the bed file for the reference data. 
+  //--block ${BLOCK}.bed, ie, file path to a bed file in, eg., block_data/EUR/
+  
+  // input small effect summary data
+  cout << "Reading summary data of small effect SNPs from [" << cPar.s << "]" << endl;
+  vector <SUMM> summ_s;
+  int n_s = cIO.readSumm(cPar.s, separate, summ_s); //readSumm is defined in scr/dtpr.cpp
+  // What is n_s?? clearly, an integer, but is it the number of small effect snps? or is it a number of subjects, 
+  // like the number of subjects used to get small effect snps?
+  vector <POS> inter_s; // what does POS mean here? I get that it's the class for inter_s, but what exactly does it mean?
+  // see scr/dtpr.hpp for definition of POS class
+  bool badsnp_s[n_s] = {false}; 
+  cSP.matchRef(summ_s, ref_bim, inter_s, cPar.mafMax, badsnp_s); //matchRef is defined in scr/dtpr.cpp
+  cout << "After filtering, " << inter_s.size() << " small effect SNPs are selected." << endl;
+  vector <INFO> info_s; 
+  int num_block_s = cSP.addBlock(inter_s, block_dat, info_s); //addBlock is defined in scr/dtpr.cpp
+  
+  // output samll effect badsnps 
+  string badsnps_str = cPar.eff + ".badsnps"; 
+  ofstream badsnpsFout(badsnps_str.c_str());
+  for (size_t i = 0; i < summ_s.size(); ++i) {
+    if (badsnp_s[i] == false)
+      badsnpsFout << summ_s[i].snp << " " << 0 << endl;
+  }
+  clearVector(summ_s);
+  
+  // large effect
+  vector <POS> inter_l;
+  vector <INFO> info_l; 
+  if (leffstream) {
+    // input large effect summary data
+    cout << "Reading summary data of large effect SNPs from [" << cPar.l << "]" << endl;
+    vector <SUMM> summ_l;
+    int n_l = cIO.readSumm(cPar.l, separate, summ_l);
+    // vector <POS> inter_l;
+    bool badsnp_l[n_l] = {false};
+    cSP.matchRef(summ_l, ref_bim, inter_l, cPar.mafMax, badsnp_l);
+    if (inter_l.size() != 0){
+      int num_block_l = cSP.addBlock(inter_l, block_dat, info_l); 
+      cout << "After filtering, " << inter_l.size() << " large effect SNPs are selected." << endl;
+    } else {
+      cout << "After filtering, no large effect SNP is selected." << endl;
+    }
+    // output large effect badsnps 
+    for (size_t i = 0; i < summ_l.size(); ++i) {
+      if (badsnp_l[i] == false){
+        badsnpsFout << summ_l[i].snp << " " << 1 << endl;
+      }
+    }
+    clearVector(summ_l);
+  }
+  
+  // output stream
+  string eff_str = cPar.eff + ".txt"; 
+  ofstream effFout(eff_str.c_str());
+  if (inter_l.size() != 0){
+    // fit model
+    vector <EFF> eff_s, eff_l; 
+    vector<int> idv(n_ref);
+    for (int i = 0; i < n_ref; i++) idv[i] = 1; 
+    string bed_str = cPar.r + ".bed";
+    double t_fitting = cIO.getWalltime();
+    double sigma_s = cPar.h / (double)cPar.nsnp; // this tells us that sigma_s *is* $\hat\sigma_s^2$!
+    cout << "Fitting model..." << endl;
+    cDBSF.est(n_ref, 
+              cPar.n, 
+              sigma_s, 
+              num_block_s, 
+              idv, 
+              bed_str, 
+              info_s, 
+              info_l, 
+              cPar.t, 
+              eff_s, 
+              eff_l); 
+    double time_fitting = cIO.getWalltime() - t_fitting;
+    cout << "Fitting time: " << time_fitting << " seconds." << endl;
+    
+    // output effect 
+    for (size_t i = 0; i < eff_l.size(); ++i) {
+      double beta_l_noscl = eff_l[i].beta / sqrt(2 * eff_l[i].maf * (1-eff_l[i].maf));//this is like "no scaling" for beta
+      if (eff_l[i].snp != "rs" && isinf(beta_l_noscl) == false)
+        effFout << eff_l[i].snp << " " << eff_l[i].a1 << " " << eff_l[i].beta << " " << beta_l_noscl << " " << 1 << endl; 
+    }
+    
+    for (size_t i = 0; i < eff_s.size(); ++i) { 
+      double beta_s_noscl = eff_s[i].beta / sqrt(2 * eff_s[i].maf * (1-eff_s[i].maf));
+      if(eff_s[i].snp.size() != 0 && isinf(beta_s_noscl) == false)
+        effFout << eff_s[i].snp << " " << eff_s[i].a1 << " " << eff_s[i].beta << " " << beta_s_noscl << " " << 0 << endl; 
+    }
+    effFout.close();
+  }
+  if (inter_l.size() == 0 || !leffstream){
+    // fit model, ie, fit for small effects only!
+    vector <EFF> eff_s; //declare eff_s as object with class EFF
+    vector<int> idv(n_ref);//declare idv as a vector of integers with length n_ref
+    for (int i = 0; i < n_ref; i++) idv[i] = 1; //set every entry of idv to value 1 (integer)
+    string bed_str = cPar.r + ".bed";
+    double t_fitting = cIO.getWalltime();
+    double sigma_s = cPar.h / (double)cPar.nsnp;
+    cout << "Fitting model..." << endl;
+    cDBSF.est(n_ref, 
+              cPar.n, 
+              sigma_s, 
+              num_block_s, 
+              idv, 
+              bed_str, 
+              info_s, 
+              cPar.t, 
+              eff_s
+    ); //call est for small effects only!
+    double time_fitting = cIO.getWalltime() - t_fitting;
+    cout << "Fitting time: " << time_fitting << " seconds." << endl;
+    
+    // output effect 
+    for (size_t i = 0; i < eff_s.size(); ++i) { 
+      double beta_s_noscl = eff_s[i].beta / sqrt(2 * eff_s[i].maf * (1-eff_s[i].maf));
+      if(eff_s[i].snp.size() != 0 && isinf(beta_s_noscl) == false)
+        effFout << eff_s[i].snp << " " << eff_s[i].a1 << " " << eff_s[i].beta << " " << beta_s_noscl << " " << 0 << endl; 
+    }
+  }
+  return;
 }

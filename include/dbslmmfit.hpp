@@ -34,16 +34,12 @@ using namespace arma;
 class DBSLMMFIT {
 public:
 	// estimate large and small effect
-	int est(int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
+	int est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
 			vector <INFO> info_s, vector <INFO> info_l, int thread, 
-			vector <EFF> &eff_s, vector <EFF> &eff_l/*, //string fam_file, 
-			unsigned int seed,
-			double test_proportion*/);
+			vector <EFF> &eff_s, vector <EFF> &eff_l);
 	// estimate only small effect
-	int est(int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
-			vector <INFO> info_s, int thread, vector <EFF> &eff_s/*, //string fam_file,
-			unsigned int seed,
-			double test_proportion*/);
+	int est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
+			vector <INFO> info_s, int thread, vector <EFF> &eff_s);
 	// estimate large and small effect for each block
 	std::tuple<arma::mat, arma::mat, arma::mat > calcBlock(int n_obs, 
                                                         double sigma_s, 

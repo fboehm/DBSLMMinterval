@@ -193,7 +193,7 @@ int DBSLMMFIT::est(
 }//end function
 
 // estimate only small effect
-int DBSLMMFIT::est(
+int DBSLMMFIT::est(int n_ref,
                    int n_obs, 
                    double sigma_s, 
                    int num_block, 
