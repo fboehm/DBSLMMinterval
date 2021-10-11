@@ -27,19 +27,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class PARAM {
 public:
-	//parameters
-	string s; 
-	string l;
-	string filestem;
-	int n;
-	double mafMax; 
-	int nsnp;
-	string b;
-	double h;
-	int t;
-	string eff;
-	unsigned int seed;
-	double test_proportion;
+  //parameters
+  string s; 
+  string l;
+  string r;
+  int n;
+  double mafMax; 
+  int nsnp;
+  string b;
+  double h;
+  int t;
+  string eff;
 };
 
 class DBSLMM {

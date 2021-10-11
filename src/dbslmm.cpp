@@ -49,125 +49,107 @@ void DBSLMM::printHeader(void)
 }
 
 void DBSLMM::printHelp(void) {
-	cout << " FILE I/O RELATED OPTIONS" << endl;
-	cout << " -s        [filename]  " << " specify input the summary data for the small effect SNPs." << endl;
-	cout << " -l        [filename]  " << " specify input the summary data for the large effect SNPs." << endl;
-	cout << " -filestem        [filename]  " << " specify input the stem for the filenames of your data." << endl;
-	cout << " -n        [num]       " << " specify input the sample size of the summary data." << endl;
-	cout << " -nsnp     [num]  " << " specify input the number of snp." << endl;
-	cout << " -b        [num]       " << " specify input the block information." << endl;
-	cout << " -h        [num]       " << " specify input the heritability." << endl;
-	cout << " -t        [filename]  " << " specify input thread." << endl;
-	cout << " -eff      [filename]  " << " specify output the estimate effect SNPs." << endl;
-	cout << " -seed     [int]       " << " specify the pseudorandom seed." << endl;
-	cout << " -test_proportion    [num]  " << " specify the proportion of subjects for the test set." << endl;
-	return;
+  cout << " FILE I/O RELATED OPTIONS" << endl;
+  cout << " -s        [filename]  " << " specify input the summary data for the small effect SNPs." << endl;
+  cout << " -l        [filename]  " << " specify input the summary data for the large effect SNPs." << endl;
+  cout << " -r        [filename]  " << " specify input the bfile of reference data." << endl;
+  cout << " -n        [num]       " << " specify input the sample size of the summary data." << endl;
+  cout << " -mafMax   [num]       " << " specify input the maximium of the difference between reference panel and summary data." << endl;
+  cout << " -nsnp     [num]  " << " specify input the number of snp." << endl;
+  cout << " -b        [num]       " << " specify input the block information." << endl;
+  cout << " -h        [num]       " << " specify input the heritability." << endl;
+  cout << " -t        [filename]  " << " specify input thread." << endl;
+  cout << " -eff      [filename]  " << " specify output the estimate effect SNPs." << endl;
+  return;
 }
 
 void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
-	
-	string str;
-	for (int i = 0; i < argc; i++) {
-
-		if (strcmp(argv[i], "--smallEff") == 0 || strcmp(argv[i], "-s") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.s = str;
-		}
-		else if (strcmp(argv[i], "--largeEff") == 0 || strcmp(argv[i], "-l") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.l = str;
-		}
-		else if (strcmp(argv[i], "--filestem") == 0 ) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.filestem = str;
-		}
-		else if (strcmp(argv[i], "--N") == 0 || strcmp(argv[i], "-n") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.n = atoi(str.c_str());
-		}
-		else if (strcmp(argv[i], "--mafMax") == 0 || strcmp(argv[i], "-mafMax") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.mafMax = atof(str.c_str());
-		}
-		else if (strcmp(argv[i], "--numSNP") == 0 || strcmp(argv[i], "-nsnp") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.nsnp = atoi(str.c_str());
-		}
-		else if (strcmp(argv[i], "--block") == 0 || strcmp(argv[i], "-b") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.b = str;
-		}
-		else if (strcmp(argv[i], "--Heritability") == 0 || strcmp(argv[i], "-h") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.h = atof(str.c_str());
-		}
-		else if (strcmp(argv[i], "--Thread") == 0 || strcmp(argv[i], "-t") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.t = atoi(str.c_str());
-		}
-		else if (strcmp(argv[i], "--EFF") == 0 || strcmp(argv[i], "-eff") == 0) {
-
-			if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-			++i;
-			str.clear();
-			str.assign(argv[i]);
-			cPar.eff = str;
-		}
-		else if (strcmp(argv[i], "--seed") == 0) {
-		  
-		  if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-		  ++i;
-		  str.clear();
-		  str.assign(argv[i]);
-		  cPar.seed = atoi(str.c_str());
-		}
-		else if (strcmp(argv[i], "--test_proportion") == 0) {
-		  
-		  if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
-		  ++i;
-		  str.clear();
-		  str.assign(argv[i]);
-		  cPar.test_proportion = atof(str.c_str()); //proportion of subjects that go into test set
-		}
-		
-	}
-	return;
+  
+  string str;
+  for (int i = 0; i < argc; i++) {
+    
+    if (strcmp(argv[i], "--smallEff") == 0 || strcmp(argv[i], "-s") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.s = str;
+    }
+    else if (strcmp(argv[i], "--largeEff") == 0 || strcmp(argv[i], "-l") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.l = str;
+    }
+    else if (strcmp(argv[i], "--reference") == 0 || strcmp(argv[i], "-r") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.r = str;
+    }
+    else if (strcmp(argv[i], "--N") == 0 || strcmp(argv[i], "-n") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.n = atoi(str.c_str());
+    }
+    else if (strcmp(argv[i], "--mafMax") == 0 || strcmp(argv[i], "-mafMax") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.mafMax = atof(str.c_str());
+    }
+    else if (strcmp(argv[i], "--numSNP") == 0 || strcmp(argv[i], "-nsnp") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.nsnp = atoi(str.c_str());
+    }
+    else if (strcmp(argv[i], "--block") == 0 || strcmp(argv[i], "-b") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.b = str;
+    }
+    else if (strcmp(argv[i], "--Heritability") == 0 || strcmp(argv[i], "-h") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.h = atof(str.c_str());
+    }
+    else if (strcmp(argv[i], "--Thread") == 0 || strcmp(argv[i], "-t") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.t = atoi(str.c_str());
+    }
+    else if (strcmp(argv[i], "--EFF") == 0 || strcmp(argv[i], "-eff") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.eff = str;
+    }
+  }
+  return;
 }
 
 void DBSLMM::BatchRun(PARAM &cPar) {
