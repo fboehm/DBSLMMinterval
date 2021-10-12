@@ -1,14 +1,15 @@
 ### change file permission for dbslmm
 dbslmm=../bin/dbslmminterval
+DIR=~/tmp/DBSLMM
 ### Parameters for DBSLMM
 let chr=1
-DBSLMM=../../DBSLMM/software/DBSLMM.R
-summf=../../DBSLMM/test_dat/summary_gemma_chr
-outPath=../../DBSLMM/test_dat/out/
+DBSLMM=${DIR}/software/DBSLMM.R
+summf=${DIR}/test_dat/summary_gemma_chr
+outPath=${DIR}/test_dat/out/
 plink=/usr/cluster/bin/plink-1.9
-ref=../../DBSLMM/test_dat/ref_chr
+ref=${DIR}/test_dat/ref_chr
 
-blockf=../block_data/EUR/chr
+blockf=${DIR}/block_data/EUR/chr
 m=`cat ${summf}${chr}.assoc.txt | wc -l` 
 h2=0.5
 nobs=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $5}'`
@@ -17,9 +18,9 @@ n=$(echo "${nobs}+${nmis}" | bc -l)
 ## execute Rscript
 Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} --plink ${plink} --dbslmm ${dbslmm} --ref ${ref}${chr} --n ${n} --nsnp ${m} --type d --model LMM --block ${blockf}${chr}.bed --h2 ${h2}
 ### Predict
-bfilete=../../DBSLMM/test_dat/test_chr
-est=../../DBSLMM/test_dat/out/summary_gemma_chr
-InterPred=../../DBSLMM/test_dat/out/internal_pred_chr
+bfilete=${DIR}/test_dat/test_chr
+est=${DIR}/test_dat/out/summary_gemma_chr
+InterPred=${DIR}/test_dat/out/internal_pred_chr
 ## plink 1.9
 plink=/usr/cluster/bin/plink-1.9
 #${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 sum --out ${InterPred}${chr}
