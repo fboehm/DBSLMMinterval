@@ -390,7 +390,8 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                             geno_s, 
                             z_s, 
                             beta_s);//returns Sigma_ss for a block
-	  out = std::make_tuple(pre, pre, pre);
+	  out = std::make_tuple(pre, pre, pre); // we repeat the same Sigma_ss three times for a block that has only small effects. 
+	  //note that blocks with large AND small effects have 3 matrices!
 	}
 	return out; 
 }
