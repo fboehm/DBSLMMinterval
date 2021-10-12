@@ -52,7 +52,7 @@ public:
 				  vector <EFF> &eff_s_block, 
 				  vector <EFF> &eff_l_block);
 	// estimate only small effect for each block
-	arma::mat calcBlock(int n_ref, int n_obs, 
+	std::tuple<arma::mat, arma::mat, arma::mat >  calcBlock(int n_ref, int n_obs, 
                      double sigma_s, 
                      vector<int> idv, 
                      string bed_str, 

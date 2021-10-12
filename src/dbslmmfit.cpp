@@ -115,6 +115,9 @@ int DBSLMMFIT::est(int n_ref,
                           eff_l_Block(B_MAX, 
                                       vector <EFF> ((int)len_l)); //declare eff_l_Block & eff_s_Block
 	vector <int> num_s_vec, num_l_vec; //declare num_s_vec & num_l_vec
+	//declare tuples storage object, snpcorrs
+	std::vector<std::tuple<arma::mat, arma::mat, arma::mat>>  snpcorrs;
+	
 	for (int i = 0; i < num_block; ++i) {//iterate over blocks, ie, i indexes block number
 		// small effect SNP information
 		vector <INFO> info_s_block; //declare info_s_block
@@ -172,6 +175,8 @@ int DBSLMMFIT::est(int n_ref,
               eff_s_Block[b], 
               eff_l_Block[b]
 			  );
+			  //store out - ie, tuple of SNP correlation matrices for a single block
+			  snpcorrs.push_back(out);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -190,6 +195,16 @@ int DBSLMMFIT::est(int n_ref,
 			num_s_vec.clear();
 		}//end if statement starting on line: if (B == B_MAX...
 	}//end loop for i
+	//assemble from vector of tuples, the snp correlation matrices into 3 big sparse matrices
+	// first, Sigma_ss - block diagonal matrix
+	//iterate over length of snpcorrs vector
+	// for i = 0 to length(snpcorrs) - 1:
+	// count_s is the number of small effect SNPs in the genome
+	// So, Sigma_ss is a count_s by count_s matrix
+	//arma::mat Sig_ss = make_block_diagonal_from_tuples()
+	
+	
+	
 	return 0;
 }//end function
 
@@ -203,8 +218,6 @@ int DBSLMMFIT::est(int n_ref,
           				 vector <INFO> info_s, 
           				 int thread, 
           				 vector <EFF> &eff_s ){
-  //return to Sheng's code
-  
 	// get the maximum number of each block
 	int count_s = 0;
 	vec num_s = zeros<vec>(num_block); 
@@ -266,7 +279,7 @@ int DBSLMMFIT::est(int n_ref,
 			omp_set_num_threads(thread);
 #pragma omp parallel for schedule(dynamic)
 			for (int b = 0; b < B; b++){
-			  arma::mat out = calcBlock(n_ref,
+			  std::tuple<arma::mat, arma::mat, arma::mat > out = calcBlock(n_ref,
               n_obs, 
               sigma_s, 
               idv, 
@@ -397,7 +410,7 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
 }
 
 // estimate only small effect for each block
-arma::mat DBSLMMFIT::calcBlock(int n_ref,
+std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                                int n_obs, 
                          double sigma_s, 
                          vector<int> idv, 
@@ -436,13 +449,13 @@ arma::mat DBSLMMFIT::calcBlock(int n_ref,
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
 	arma::vec beta_s= zeros<vec>(num_s_block);
-	arma::mat out = estBlock(n_ref, 
+	arma::mat pre = estBlock(n_ref, 
                           n_obs, 
                       sigma_s, 
                       geno_s, 
                       z_s, 
                       beta_s);//returns Sigma_ss for a block
-	
+	std::tuple<arma::mat, arma::mat, arma::mat > out = std::make_tuple(pre, pre, pre);
 	return out; 
 }
 
@@ -512,6 +525,7 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 //' @param z_l z for large effect SNPs in this block
 //' @param beta_s coefficient estimates for small effect SNPs in this block
 //' @param beta_l coefficient estimates for large effect SNPs in this block 
+//' @return a tuple containing 3 matrices: Sigma_ss, Sigma_ls, and Sigma_ll
 
 std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::estBlock(
     int n_ref, 
@@ -566,7 +580,7 @@ std::tuple<arma::mat, arma::mat, arma::mat > DBSLMMFIT::estBlock(
 	beta_s = sqrt(n_obs) * z_s - (double)n_obs * SIGMA_ls.t() * beta_l - SIGMA_ss_z_s_SIGMA_sl_beta_l; 
 	beta_s *= sigma_s;
 	
-	auto result = std::make_tuple(SIGMA_ll, SIGMA_ls, SIGMA_ss);
+	auto result = std::make_tuple(SIGMA_ss, SIGMA_ls, SIGMA_ll);
 	return(result);
 	//return 0; 
 }
