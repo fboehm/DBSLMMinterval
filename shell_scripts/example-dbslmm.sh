@@ -22,8 +22,8 @@ est=../../DBSLMM/test_dat/out/summary_gemma_chr
 InterPred=../../DBSLMM/test_dat/out/internal_pred_chr
 ## plink 1.9
 plink=/usr/cluster/bin/plink-1.9
-${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 sum --out ${InterPred}${chr}
+#${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 sum --out ${InterPred}${chr}
 ## plink 2
 plink=plink2
-${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 cols=+scoresums --out ${InterPred}${chr}
+#${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 cols=+scoresums --out ${InterPred}${chr}
 
