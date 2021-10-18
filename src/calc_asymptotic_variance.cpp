@@ -111,3 +111,62 @@ arma::mat calc_var_betas(arma::mat Sigma_ss,
   return result;
 }
 
+//' Construct a block diagonal matrix from a collection of square matrices
+//' 
+//' @param x a field of square matrices, possibly of different sizes
+//' @return a block diagonal matrix
+//' @reference https://stackoverflow.com/questions/29198893/block-diagonal-matrix-armadillo
+arma::mat blockDiag( arma::field<mat> x ) {
+  
+  unsigned int n = x.n_rows;
+  int dimen = 0;
+  arma::ivec dimvec(n);
+  
+  for(unsigned int i=0; i<n; i++) {
+    dimvec(i) = x(i, 0).n_rows ; 
+    dimen += dimvec(i) ;
+  }
+  
+  mat X(dimen,dimen,fill::zeros);
+  int idx=0;
+  
+  for(unsigned int i=0; i<n; i++) {
+    X.submat(idx, idx, idx + dimvec(i) - 1, idx + dimvec(i) - 1) = x(i, 0) ;
+    idx = idx + dimvec(i) ;
+  }
+  
+  return(X);
+}
+
+//' Construct a block diagonal matrix from a collection of not square matrices
+//' 
+//' @param x a field of not square matrices, possibly of different sizes
+//' @return a block diagonal matrix
+//' @reference https://stackoverflow.com/questions/29198893/block-diagonal-matrix-armadillo
+arma::mat notSquareBlockDiag( arma::field<mat> x ) {
+  
+  unsigned int len = x.n_rows;
+  int drow = 0;
+  int dcol = 0;
+  arma::ivec rvec(len);
+  arma::ivec cvec(len);
+  for(unsigned int i=0; i<n; i++) {
+    rvec(i) = x(i, 0).n_rows ; 
+    drow += rvec(i) ;
+    cvec(i) = x(i, 0).n_cols ; 
+    dcol += cvec(i);
+  }
+  
+  mat X(drow, dcol, fill::zeros);
+  int idx_row = 0;
+  int idx_col = 0;
+  
+  for(unsigned int i=0; i<n; i++) {
+    X.submat(idx_row, idx_col, idx + rvec(i) - 1, idx + cvec(i) - 1) = x(i, 0) ;
+    idx_row = idx_row + rvec(i) ;
+    idx_col = idx_col + cvec(i);
+  }
+  return(X);
+}
+
+
