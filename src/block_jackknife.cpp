@@ -6,7 +6,7 @@ using namespace std;
 
 //' Calculate qplus alpha and qminus alpha for a vector of LOO residuals
 //' 
-//' @param residuals vector
+//' @param residuals vector of leave-one out residuals
 //' @param alpha
 //' @return a tuple of length two, with each element containing exactly one entry, an entry from residuals vector, corresponding to the empirical quantiles of interest
 //' @reference see page 4 of Barber et al 2020 preprint "Predictive inference with the jackknife+"
