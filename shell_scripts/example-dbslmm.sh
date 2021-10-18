@@ -1,6 +1,7 @@
 ### change file permission for dbslmm
-dbslmm=../bin/dbslmminterval
 DIR=~/tmp/DBSLMM
+#dbslmm=../bin/dbslmminterval
+dbslmm=${DIR}/scr/dbslmm
 ### Parameters for DBSLMM
 let chr=1
 DBSLMM=${DIR}/software/DBSLMM.R
