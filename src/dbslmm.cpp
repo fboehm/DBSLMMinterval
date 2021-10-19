@@ -225,7 +225,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
   cout << num_snp_ref << " SNPs to be included from reference BIM file." << endl;
   
   // input block file
-  vector <BLOCK> block_dat; 
+  vector <BLOCK> block_dat; //block_dat gets populated in the next line!
   cIO.readBlock(cPar.b, separate, block_dat); //readBlock is defined in scr/dtpr.cpp. It reads the files that contain the blocking information 
   //cPar.b is the --block option, ie, the file containing the blocking information, ie, the bed file for the reference data. 
   //--block ${BLOCK}.bed, ie, file path to a bed file in, eg., block_data/EUR/
@@ -243,7 +243,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
   cout << "After filtering, " << inter_s.size() << " small effect SNPs are selected." << endl;
   vector <INFO> info_s; 
   int num_block_s = cSP.addBlock(inter_s, block_dat, info_s); //addBlock is defined in scr/dtpr.cpp
-  
+  //What exactly is num_block_s? 
   // output samll effect badsnps 
   string badsnps_str = cPar.eff + ".badsnps"; 
   ofstream badsnpsFout(badsnps_str.c_str());
@@ -294,7 +294,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
     cDBSF.est(n_ref, 
               cPar.n, 
               sigma_s, 
-              num_block_s, 
+              num_block_s, //
               idv, 
               bed_str, 
               info_s, 

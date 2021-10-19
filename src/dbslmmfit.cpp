@@ -53,7 +53,7 @@ using namespace arma;
 int DBSLMMFIT::est(int n_ref,
                    int n_obs, 
                    double sigma_s, 
-                   int num_block, 
+                   int num_block, //is this the number of markers in a single block? Or the number of blocks in the genome?
                    vector<int> idv, 
                    string bed_str,
                    vector <INFO> info_s, // one entry per small effect SNP
@@ -116,7 +116,9 @@ int DBSLMMFIT::est(int n_ref,
                                       vector <EFF> ((int)len_l)); //declare eff_l_Block & eff_s_Block
 	vector <int> num_s_vec, num_l_vec; //declare num_s_vec & num_l_vec
 	//declare tuples storage object, snpcorrs
-	std::vector<std::tuple<arma::mat, arma::mat, arma::mat>>  snpcorrs;
+	arma::field <arma::mat> Sigma_ss;
+	arma::field <arma::mat> Sigma_sl;
+	arma::field <arma::mat> Sigma_ll;
 	
 	for (int i = 0; i < num_block; ++i) {//iterate over blocks, ie, i indexes block number
 		// small effect SNP information
@@ -175,9 +177,13 @@ int DBSLMMFIT::est(int n_ref,
               eff_s_Block[b], 
               eff_l_Block[b]
 			  );
-			  //store out - ie, tuple of SNP correlation matrices for a single block
-			  snpcorrs.push_back(out);
-			}
+			  //transfer 'out' into the 3 fields
+			  Sigma_ss(i, 0) = std::get<0> out;
+			  Sigma_sl(i, 0) = std::get<1> out;
+			  Sigma_ll(i, 0) = std::get<2> out;
+			  
+			  
+			} // end loop over b
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
 				for (int l = 0; l < num_s_vec[r]; l++){
@@ -218,6 +224,7 @@ int DBSLMMFIT::est(int n_ref,
           				 vector <INFO> info_s, 
           				 int thread, 
           				 vector <EFF> &eff_s ){
+  arma::field <arma::mat> Sigma_ss;
 	// get the maximum number of each block
 	int count_s = 0;
 	vec num_s = zeros<vec>(num_block); 
@@ -287,7 +294,11 @@ int DBSLMMFIT::est(int n_ref,
               info_s_Block[b],
 						  num_s_vec[b], 
               eff_s_Block[b]);
+			  Sigma_ss(i, 0) = std::get<0> out;
+			  
 			}
+			
+			
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
 				for (int l = 0; l < num_s_vec[r]; l++){
