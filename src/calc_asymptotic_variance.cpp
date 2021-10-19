@@ -5,7 +5,6 @@
 #include <armadillo>
 #include <string>
 #include <boost/algorithm/string.hpp> // split
-#include <tuple> // std::tuple, std::get, std::tie, std::ignore
 #include <algorithm>
 
 #include "../include/calc_asymptotic_variance.h"
@@ -15,9 +14,9 @@ using namespace std;
 
 //' Calculate the asymptotic variance for the predicted y values
 //' 
-//' @param Sigma_ll Sigma_ll matrix for a single LD block
-//' @param Sigma_ls Sigma_ls matrix for a single LD block
-//' @param Sigma_ss Sigma_ss matrix for a single LD block
+//' @param Sigma_ll Sigma_ll matrix for the whole genome
+//' @param Sigma_ls Sigma_ls matrix for the whole genome
+//' @param Sigma_ss Sigma_ss matrix for the whole genome
 //' @param sigma2_s estimated value of sigma^2_s
 //' @param n sample size
 //' @param Xl_test genotypes matrix for large effect SNPs for test subjects
@@ -117,6 +116,7 @@ arma::mat calc_var_betas(arma::mat Sigma_ss,
 //' @param x a field of matrices, possibly of different sizes
 //' @return a block diagonal matrix
 //' @reference https://stackoverflow.com/questions/29198893/block-diagonal-matrix-armadillo
+
 arma::mat BlockDiag( arma::field<mat> x ) {
   
   unsigned int len = x.n_rows;
