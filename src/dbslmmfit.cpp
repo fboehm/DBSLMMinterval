@@ -465,7 +465,7 @@ arma::field < arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                            geno_s, 
                            z_s, 
                            beta_s);//returns Sigma_ss for a block
-	arma::field<arma::mat> out;
+	arma::field<arma::mat> out(1);
 	out(0) = pre;
 	return out; 
 }
@@ -528,6 +528,7 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 
 //' Calculate coefficient estimates for one block of SNPs, with both large and small effects
 //' 
+//' @param n_ref reference panel sample size
 //' @param n_obs sample size for data
 //' @param sigma_s estimate of sigma_s^2
 //' @param geno_s genotypes matrix for small effect SNPs in this block
