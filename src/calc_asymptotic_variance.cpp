@@ -125,18 +125,18 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
   arma::ivec rvec(len);
   arma::ivec cvec(len);
   //get dimensions of each matrix in the field
-  for(unsigned int i=0; i<n; i++) {
+  for(unsigned int i=0; i< len; i++) {
     rvec(i) = x(i, 0).n_rows ; 
     drow += rvec(i) ;
     cvec(i) = x(i, 0).n_cols ; 
     dcol += cvec(i);
   }
   //initialize matrix to be returned
-  mat X(drow, dcol, fill::zeros);
+  arma::mat X(drow, dcol, fill::zeros);
   int idx_row = 0;
   int idx_col = 0;
   // place matrices at correct places
-  for(unsigned int i=0; i<n; i++) {
+  for(unsigned int i=0; i< len; i++) {
     X.submat(idx_row, idx_col, idx + rvec(i) - 1, idx + cvec(i) - 1) = x(i, 0) ;
     idx_row = idx_row + rvec(i) ;
     idx_col = idx_col + cvec(i);
