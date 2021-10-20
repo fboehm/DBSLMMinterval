@@ -211,6 +211,8 @@ int DBSLMMFIT::est(int n_ref,
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
 	Sigma_ss_matrix.save("Sigma_ss.dat");
+	cout << "Output sentence from est for big and small";
+	
 	return 0;
 }//end function
 
