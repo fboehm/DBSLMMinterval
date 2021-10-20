@@ -35,9 +35,4 @@ arma::mat calc_A_inverse(arma::mat Sigma_ss,
                          unsigned int n);
 
 
-std::tuple<std::vector<std::string>, std::vector<std::string> > read_pheno(std::string file_path, 
-                                                       int column_number = 6);
-
-std::vector<double> convert_string_vector_to_double_vector(std::vector<std::string> string_vector);
-
-arma::vec center_vector(arma::vec vector);
+arma::mat BlockDiag( arma::field<mat> x );
