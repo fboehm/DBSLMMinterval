@@ -208,6 +208,9 @@ int DBSLMMFIT::est(int n_ref,
 	// count_s is the number of small effect SNPs in the genome
 	// So, Sigma_ss is a count_s by count_s matrix
 	//arma::mat Sig_ss = make_block_diagonal_from_tuples()
+	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
+	//armadillo save the matrix
+	Sigma_ss_matrix.save("Sigma_ss.dat");
 	return 0;
 }//end function
 
