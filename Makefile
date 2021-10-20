@@ -34,4 +34,5 @@ src/subset_to_test_and_training.o: src/subset_to_test_and_training.cpp include/s
 
 
 clean:
-	rm -f src/*.o  bin/dbslmm
+	rm -f src/*.o $(OUTPUTD)
+
