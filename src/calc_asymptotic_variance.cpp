@@ -120,6 +120,7 @@ arma::mat calc_var_betas(arma::mat Sigma_ss,
 arma::mat BlockDiag( arma::field<arma::mat> x ) {
   
   unsigned int len = x.n_rows;
+  cout << "number of rows in field is " << len << endl;
   int drow = 0;
   int dcol = 0;
   arma::ivec rvec(len);
