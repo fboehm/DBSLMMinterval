@@ -132,13 +132,19 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
     cvec(i) = x(i, 0).n_cols ; 
     dcol += cvec(i);
   }
+  cout << "number of rows in big block diagonal is " << drow << endl;
+  cout << "number of columns in big block diagonal is " << dcol << endl;
+  
   //initialize matrix to be returned
   arma::mat X(drow, dcol, fill::zeros);
   int idx_row = 0;
   int idx_col = 0;
   // place matrices at correct places
   for(unsigned int i=0; i< len; i++) {
-    X.submat(idx_row, idx_col, idx_row + rvec(i) - 1, idx_col + cvec(i) - 1) = x(i, 0) ;
+    X.submat(idx_row, 
+             idx_col, 
+             idx_row + rvec(i) - 1, 
+             idx_col + cvec(i) - 1) = x(i, 0) ;
     idx_row = idx_row + rvec(i) ;
     idx_col = idx_col + cvec(i);
   }
