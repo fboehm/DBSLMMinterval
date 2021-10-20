@@ -210,7 +210,6 @@ void DBSLMM::BatchRun(PARAM &cPar) {
   // get sample size of reference panel 
   char separate[] = "\t";
   cout << "Reading PLINK FAM file from [" << cPar.r << ".fam]" << endl;
-  cout << "TESTING" << endl;
   int n_ref = cIO.getRow(ref_fam_str); //n_ref is sample size of reference panel!
   cout << n_ref << " individuals to be included from reference FAM file." << endl;
   
