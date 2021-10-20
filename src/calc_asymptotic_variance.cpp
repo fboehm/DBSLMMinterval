@@ -137,7 +137,7 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
   int idx_col = 0;
   // place matrices at correct places
   for(unsigned int i=0; i< len; i++) {
-    X.submat(idx_row, idx_col, idx + rvec(i) - 1, idx + cvec(i) - 1) = x(i, 0) ;
+    X.submat(idx_row, idx_col, idx_row + rvec(i) - 1, idx_col + cvec(i) - 1) = x(i, 0) ;
     idx_row = idx_row + rvec(i) ;
     idx_col = idx_col + cvec(i);
   }
