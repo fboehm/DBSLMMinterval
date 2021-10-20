@@ -115,10 +115,10 @@ int DBSLMMFIT::est(int n_ref,
                           eff_l_Block(B_MAX, 
                                       vector <EFF> ((int)len_l)); //declare eff_l_Block & eff_s_Block
 	vector <int> num_s_vec, num_l_vec; //declare num_s_vec & num_l_vec
-	//declare tuples storage object, snpcorrs
-	arma::field <arma::mat> Sigma_ss(num_block, 1);
-	arma::field <arma::mat> Sigma_sl(num_block, 1);
-	arma::field <arma::mat> Sigma_ll(num_block, 1);
+	//declare fields 
+	arma::field <arma::mat> Sigma_ss(num_block);
+	arma::field <arma::mat> Sigma_sl(num_block);
+	arma::field <arma::mat> Sigma_ll(num_block);
 	
 	for (int i = 0; i < num_block; ++i) {//iterate over blocks, ie, i indexes block number
 		// small effect SNP information
@@ -178,9 +178,9 @@ int DBSLMMFIT::est(int n_ref,
               eff_l_Block[b]
 			  );
 			  //transfer 'out' into the 3 fields
-			  Sigma_ss(b, 0) = std::get<0>(out);
-			  Sigma_sl(b, 0) = std::get<1>(out);
-			  Sigma_ll(b, 0) = std::get<2>(out);
+			  Sigma_ss(b) = std::get<0>(out);
+			  Sigma_sl(b) = std::get<1>(out);
+			  Sigma_ll(b) = std::get<2>(out);
 			  
 			  
 			} // end loop over b
@@ -224,7 +224,7 @@ int DBSLMMFIT::est(int n_ref,
           				 vector <INFO> info_s, 
           				 int thread, 
           				 vector <EFF> &eff_s ){
-  arma::field <arma::mat> Sigma_ss(num_block, 1);
+  arma::field <arma::mat> Sigma_ss(num_block);
 	// get the maximum number of each block
 	int count_s = 0;
 	vec num_s = zeros<vec>(num_block); 
@@ -292,7 +292,7 @@ int DBSLMMFIT::est(int n_ref,
               info_s_Block[b],
 						  num_s_vec[b], 
               eff_s_Block[b]);
-			  Sigma_ss(b, 0) = std::get<0>(out);
+			  Sigma_ss(b) = std::get<0>(out);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -621,5 +621,5 @@ arma::mat DBSLMMFIT::estBlock(int n_ref,
 	vec z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl = z_s - SIGMA_ss_SIGMA_ss_inv_z_s; 
 	beta_s = sqrt(n_obs) * sigma_s * z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl; 
 	
-	return SIGMA_ss; 
+	return (SIGMA_ss); 
 }
