@@ -398,14 +398,14 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 		arma::vec beta_l= zeros<vec>(num_l_block);
 		
 		out = estBlock(n_ref,
-                                                              n_obs, 
-                                                              sigma_s, 
-                                                              geno_s, 
-                                                              geno_l, 
-                                                              z_s, 
-                                                              z_l, 
-                                                              beta_s,
-                                                              beta_l);
+                    n_obs, 
+                    sigma_s, 
+                    geno_s, 
+                    geno_l, 
+                    z_s, 
+                    z_l, 
+                    beta_s,
+                    beta_l);
 			}
 	if (num_l_block == 0){
 	  arma::mat pre = estBlock(n_ref, 
@@ -414,7 +414,7 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
                             geno_s, 
                             z_s, 
                             beta_s);//returns Sigma_ss for a block
-	  out(1) = pre; // we repeat the same Sigma_ss three times for a block that has only small effects. 
+	  out(0) = pre; // we repeat the same Sigma_ss three times for a block that has only small effects. 
 	  //note that blocks with large AND small effects have 3 matrices!
 	}
 	return out; 
@@ -467,7 +467,7 @@ arma::field < arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                            z_s, 
                            beta_s);//returns Sigma_ss for a block
 	arma::field<arma::mat> out;
-	out(1) = pre;
+	out(0) = pre;
 	return out; 
 }
 
