@@ -304,6 +304,10 @@ int DBSLMMFIT::est(int n_ref,
 			num_s_vec.clear();
 		}
 	}
+	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
+	//armadillo save the matrix
+	Sigma_ss_matrix.save("Sigma_ss.dat");
+	cout << "Output sentence";
 	return 0;
 }
 
