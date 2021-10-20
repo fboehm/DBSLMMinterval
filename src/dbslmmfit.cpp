@@ -539,15 +539,15 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 //' @return a arma::field containing 3 matrices: Sigma_ss, Sigma_ls, and Sigma_ll
 
 arma::field< arma::mat > DBSLMMFIT::estBlock(
-    int n_ref, 
-    int n_obs, 
-                        double sigma_s, 
-                        mat geno_s, 
-                        mat geno_l, 
-                        vec z_s, 
-                        vec z_l, 
-                        vec &beta_s,
-                        vec &beta_l) {
+                                            int n_ref, 
+                                            int n_obs, 
+                                            double sigma_s, 
+                                            mat geno_s, 
+                                            mat geno_l, 
+                                            vec z_s, 
+                                            vec z_l, 
+                                            vec &beta_s,
+                                            vec &beta_l) {
 	
 	// LD matrix 
 	// mat SIGMA_ls = geno_l.t() * geno_s; 
@@ -591,7 +591,8 @@ arma::field< arma::mat > DBSLMMFIT::estBlock(
 	beta_s = sqrt(n_obs) * z_s - (double)n_obs * SIGMA_ls.t() * beta_l - SIGMA_ss_z_s_SIGMA_sl_beta_l; 
 	beta_s *= sigma_s;
 	
-	arma::field<arma::mat> result(3);
+	//arma::field<arma::mat> result(3);
+	arma::field<arma::mat> result;
 	result(0) = SIGMA_ss;
 	result(1) = arma::trans(SIGMA_ls);
 	result(2) = SIGMA_ll;
