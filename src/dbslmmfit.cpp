@@ -178,9 +178,9 @@ int DBSLMMFIT::est(int n_ref,
               eff_l_Block[b]
 			  );
 			  //transfer 'out' into the 3 fields
-			  Sigma_ss(b, 0) = std::get<0> out;
-			  Sigma_sl(b, 0) = std::get<1> out;
-			  Sigma_ll(b, 0) = std::get<2> out;
+			  Sigma_ss(b, 0) = std::get<0>(out);
+			  Sigma_sl(b, 0) = std::get<1>(out);
+			  Sigma_ll(b, 0) = std::get<2>(out);
 			  
 			  
 			} // end loop over b
@@ -289,7 +289,7 @@ int DBSLMMFIT::est(int n_ref,
               info_s_Block[b],
 						  num_s_vec[b], 
               eff_s_Block[b]);
-			  Sigma_ss(b, 0) = std::get<0> out;
+			  Sigma_ss(b, 0) = std::get<0>(out);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
