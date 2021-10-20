@@ -10,7 +10,7 @@
 #include "../include/calc_asymptotic_variance.h"
 
 using namespace std;
-
+using namespace arma;
 
 //' Calculate the asymptotic variance for the predicted y values
 //' 
