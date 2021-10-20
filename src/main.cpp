@@ -41,5 +41,6 @@ int main(int argc, char * argv[])
   }
   cDB.Assign(argc, argv, cPar);
   cDB.BatchRun(cPar);
+  cout << "test sentence";
   return EXIT_SUCCESS;
 }
