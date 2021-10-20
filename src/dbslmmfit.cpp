@@ -116,9 +116,9 @@ int DBSLMMFIT::est(int n_ref,
                                       vector <EFF> ((int)len_l)); //declare eff_l_Block & eff_s_Block
 	vector <int> num_s_vec, num_l_vec; //declare num_s_vec & num_l_vec
 	//declare tuples storage object, snpcorrs
-	arma::field <arma::mat> Sigma_ss;
-	arma::field <arma::mat> Sigma_sl;
-	arma::field <arma::mat> Sigma_ll;
+	arma::field <arma::mat> Sigma_ss(num_block, 1);
+	arma::field <arma::mat> Sigma_sl(num_block, 1);
+	arma::field <arma::mat> Sigma_ll(num_block, 1);
 	
 	for (int i = 0; i < num_block; ++i) {//iterate over blocks, ie, i indexes block number
 		// small effect SNP information
@@ -224,7 +224,7 @@ int DBSLMMFIT::est(int n_ref,
           				 vector <INFO> info_s, 
           				 int thread, 
           				 vector <EFF> &eff_s ){
-  arma::field <arma::mat> Sigma_ss;
+  arma::field <arma::mat> Sigma_ss(num_block, 1);
 	// get the maximum number of each block
 	int count_s = 0;
 	vec num_s = zeros<vec>(num_block); 
