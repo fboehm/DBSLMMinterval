@@ -178,9 +178,9 @@ int DBSLMMFIT::est(int n_ref,
               eff_l_Block[b]
 			  );
 			  //transfer 'out' into the 3 fields
-			  Sigma_ss(i, 0) = std::get<0> out;
-			  Sigma_sl(i, 0) = std::get<1> out;
-			  Sigma_ll(i, 0) = std::get<2> out;
+			  Sigma_ss(b, 0) = std::get<0> out;
+			  Sigma_sl(b, 0) = std::get<1> out;
+			  Sigma_ll(b, 0) = std::get<2> out;
 			  
 			  
 			} // end loop over b
@@ -208,9 +208,6 @@ int DBSLMMFIT::est(int n_ref,
 	// count_s is the number of small effect SNPs in the genome
 	// So, Sigma_ss is a count_s by count_s matrix
 	//arma::mat Sig_ss = make_block_diagonal_from_tuples()
-	
-	
-	
 	return 0;
 }//end function
 
@@ -239,7 +236,6 @@ int DBSLMMFIT::est(int n_ref,
 		}
 	}
 	count_s = 0; // reset
-	
 	double len_s = num_s.max(); 
 	
 	int B = 0;
@@ -282,7 +278,6 @@ int DBSLMMFIT::est(int n_ref,
 		
 		B++;
 		if (B == B_MAX || i + 1 == num_block) { // process the block of SNPs using multi-threading
-			
 			omp_set_num_threads(thread);
 #pragma omp parallel for schedule(dynamic)
 			for (int b = 0; b < B; b++){
@@ -294,11 +289,8 @@ int DBSLMMFIT::est(int n_ref,
               info_s_Block[b],
 						  num_s_vec[b], 
               eff_s_Block[b]);
-			  Sigma_ss(i, 0) = std::get<0> out;
-			  
+			  Sigma_ss(b, 0) = std::get<0> out;
 			}
-			
-			
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
 				for (int l = 0; l < num_s_vec[r]; l++){
