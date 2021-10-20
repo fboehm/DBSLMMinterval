@@ -165,24 +165,23 @@ int DBSLMMFIT::est(int n_ref,
 #pragma omp parallel for schedule(dynamic)
 			for (int b = 0; b < B; b++){
 			  arma::field< arma::mat > out = calcBlock(
-			    n_ref,
-			    n_obs, 
-              sigma_s, 
-              idv, 
-              bed_str, 
-              info_s_Block[b], 
-              info_l_Block[b],
-						  num_s_vec[b], 
-              num_l_vec[b], 
-              eff_s_Block[b], 
-              eff_l_Block[b]
+                                  			        n_ref,
+                                  			        n_obs, 
+                                                sigma_s, 
+                                                idv, 
+                                                bed_str, 
+                                                info_s_Block[b], 
+                                                info_l_Block[b],
+                                  						  num_s_vec[b], 
+                                                num_l_vec[b], 
+                                                eff_s_Block[b], 
+                                                eff_l_Block[b]
 			  );
 			  //transfer 'out' into the 3 fields
 			  Sigma_ss(b) = out(0);
 			  Sigma_sl(b) = out(1);
 			  Sigma_ll(b) = out(2);
-			  
-			  
+
 			} // end loop over b
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
