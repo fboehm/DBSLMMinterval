@@ -117,7 +117,7 @@ arma::mat calc_var_betas(arma::mat Sigma_ss,
 //' @return a block diagonal matrix
 //' @reference https://stackoverflow.com/questions/29198893/block-diagonal-matrix-armadillo
 
-arma::mat BlockDiag( arma::field<mat> x ) {
+arma::mat BlockDiag( arma::field<arma::mat> x ) {
   
   unsigned int len = x.n_rows;
   int drow = 0;

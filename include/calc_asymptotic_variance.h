@@ -35,4 +35,4 @@ arma::mat calc_A_inverse(arma::mat Sigma_ss,
                          unsigned int n);
 
 
-arma::mat BlockDiag( arma::field<mat> x );
+arma::mat BlockDiag( arma::field<arma::mat> x );
