@@ -74,7 +74,7 @@ public:
                                                        vec &beta_s,
                                                        vec &beta_l);
 	// only small effect
-	arma::mat estBlock(
+	arma::field <arma::mat> estBlock(
 	    int n_ref,
 	    int n_obs, 
                     double sigma_s, 
