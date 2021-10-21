@@ -325,6 +325,7 @@ int DBSLMMFIT::est(int n_ref,
 //' @param num_l_block
 //' @param eff_s_block effects object for small effects per block? 
 //' @param eff_l_block effects object for large effects per block?
+//' @return a armadillo field containing arma::mat objects
 // estimate large and small effect for each block
 arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref, 
                                             int n_obs, 
@@ -396,7 +397,7 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 		}
 		arma::vec beta_l= zeros<vec>(num_l_block);
 		
-		out = estBlock(n_ref,
+		arma::field <arma::mat> out = estBlock(n_ref,
                     n_obs, 
                     sigma_s, 
                     geno_s, 
@@ -407,14 +408,12 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
                     beta_l);
 			}
 	if (num_l_block == 0){
-	  arma::mat pre = estBlock(n_ref, 
+	  arma::field <arma::mat> out = estBlock(n_ref, 
                             n_obs, 
                             sigma_s, 
                             geno_s, 
                             z_s, 
                             beta_s);//returns Sigma_ss for a block
-	  out(0) = pre; // we repeat the same Sigma_ss three times for a block that has only small effects. 
-	  //note that blocks with large AND small effects have 3 matrices!
 	}
 	return out; 
 }
@@ -459,14 +458,12 @@ arma::field < arma::mat > DBSLMMFIT::calcBlock(int n_ref,
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
 	arma::vec beta_s= zeros<vec>(num_s_block);
-	arma::mat pre = estBlock(n_ref, 
+	arma::field <arma::mat> out = estBlock(n_ref, 
                            n_obs, 
                            sigma_s, 
                            geno_s, 
                            z_s, 
-                           beta_s);//returns Sigma_ss for a block
-	arma::field<arma::mat> out(1);
-	out(0) = pre;
+                           beta_s);
 	return out; 
 }
 
@@ -593,12 +590,10 @@ arma::field< arma::mat > DBSLMMFIT::estBlock(
 	beta_s *= sigma_s;
 	
 	arma::field<arma::mat> result(3);
-	//arma::field<arma::mat> result;
 	result(0) = SIGMA_ss;
 	result(1) = arma::trans(SIGMA_ls);
 	result(2) = SIGMA_ll;
 	return(result);
-	//return 0; 
 }
 
 arma::mat DBSLMMFIT::estBlock(int n_ref,
@@ -626,6 +621,7 @@ arma::mat DBSLMMFIT::estBlock(int n_ref,
 	vec SIGMA_ss_SIGMA_ss_inv_z_s = SIGMA_ss * SIGMA_ss_inv_z_s;
 	vec z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl = z_s - SIGMA_ss_SIGMA_ss_inv_z_s; 
 	beta_s = sqrt(n_obs) * sigma_s * z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl; 
-	
-	return (SIGMA_ss); 
+	arma::field <arma::mat> result(3);
+	result(0) = SIGMA_ss;
+	return (result); 
 }
