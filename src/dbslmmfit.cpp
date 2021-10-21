@@ -596,7 +596,7 @@ arma::field< arma::mat > DBSLMMFIT::estBlock(
 	return(result);
 }
 
-arma::mat DBSLMMFIT::estBlock(int n_ref,
+arma::field <arma::mat> DBSLMMFIT::estBlock(int n_ref,
                         int n_obs, 
                         double sigma_s, 
                         mat geno_s, 
