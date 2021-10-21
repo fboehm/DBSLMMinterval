@@ -428,12 +428,16 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 	  eff_s.beta = beta_s(i); 
 	  eff_s_block[i] = eff_s;
 	}
-	(num_l_block == 0) ? (arma::field <arma::mat> out = estBlock(n_ref, 
+	arma::field <arma::mat> out (3);
+	if (num_l_block == 0) {
+	  out = estBlock(n_ref, 
        n_obs, 
        sigma_s, 
        geno_s, 
        z_s, 
-       beta_s)) : 		(arma::field <arma::mat> out = estBlock(n_ref,
+       beta_s)}
+	else {
+	  out = estBlock(n_ref,
        n_obs, 
        sigma_s, 
        geno_s, 
@@ -441,8 +445,8 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
        z_s, 
        z_l, 
        beta_s,
-       beta_l));
-	
+       beta_l);
+	}
 	return out; 
 }
 
