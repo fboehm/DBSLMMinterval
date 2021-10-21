@@ -436,7 +436,7 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
        geno_s, 
        z_s, 
        beta_s);
-	  };
+	  }
 	else {
 	  out = estBlock(n_ref,
        n_obs, 
