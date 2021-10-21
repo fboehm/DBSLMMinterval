@@ -373,6 +373,9 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 	eff_pseudo.beta = 0.0; 
 	
 	vec beta_s = zeros<vec>(num_s_block); // is this correct??
+	vec z_l = zeros<vec>(num_l_block); 
+	mat geno_l = zeros<mat>(n_ref, num_l_block); //geno_l gets filled to become Xl matrix (in notation of supplemental materials)
+	arma::vec beta_l= zeros<vec>(num_l_block);// is this needed??
 	// INFO large effect SNPs 
 	if (num_l_block != 0){ //why is this needed??? wouldn't we only be using this function when num_l_block >0??
 		// vector <INFO*> info_l_block(num_l_block);
@@ -380,12 +383,10 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 		for (int i = 0; i < num_l_block; i++) 
 			info_l_block[i] = info_l_block_full[i];
 		// z_l
-		vec z_l = zeros<vec>(num_l_block); 
 		for(int i = 0; i < num_l_block; i++) 
 			// z_l(i) = info_l_block[i]->z;
 			z_l(i) = info_l_block[i].z;
 		// large effect matrix
-		mat geno_l = zeros<mat>(n_ref, num_l_block); //geno_l gets filled to become Xl matrix (in notation of supplemental materials)
 		for (int i = 0; i < num_l_block; ++i) {
 			vec geno = zeros<vec>(n_ref);
 			double maf = 0.0; 
@@ -394,7 +395,6 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 			cSP.nomalizeVec(geno);
 			geno_l.col(i) = geno;
 		}
-		arma::vec beta_l= zeros<vec>(num_l_block);// is this needed??
 		
 		// summary 
 		for(int i = 0; i < num_l_block; i++) {
