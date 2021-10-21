@@ -396,15 +396,6 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 		}
 		arma::vec beta_l= zeros<vec>(num_l_block);// is this needed??
 		
-		arma::field <arma::mat> out = estBlock(n_ref,
-                    n_obs, 
-                    sigma_s, 
-                    geno_s, 
-                    geno_l, 
-                    z_s, 
-                    z_l, 
-                    beta_s,
-                    beta_l);
 		// summary 
 		for(int i = 0; i < num_l_block; i++) {
 		  EFF eff_l; 
@@ -419,12 +410,7 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 		}
 			}
 	if (num_l_block == 0){
-	  arma::field <arma::mat> out = estBlock(n_ref, 
-                            n_obs, 
-                            sigma_s, 
-                            geno_s, 
-                            z_s, 
-                            beta_s);//returns Sigma_ss for a block
+	  
 	  eff_l_block[0].snp = eff_pseudo.snp;
 	  eff_l_block[0].a1 = eff_pseudo.a1;
 	  eff_l_block[0].maf = eff_pseudo.maf;
@@ -442,6 +428,21 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 	  eff_s.beta = beta_s(i); 
 	  eff_s_block[i] = eff_s;
 	}
+	(num_l_block == 0) ? (arma::field <arma::mat> out = estBlock(n_ref, 
+       n_obs, 
+       sigma_s, 
+       geno_s, 
+       z_s, 
+       beta_s)) : 		(arma::field <arma::mat> out = estBlock(n_ref,
+       n_obs, 
+       sigma_s, 
+       geno_s, 
+       geno_l, 
+       z_s, 
+       z_l, 
+       beta_s,
+       beta_l));
+	
 	return out; 
 }
 
