@@ -339,7 +339,6 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
                                            vector <EFF> &eff_s_block, 
                                            vector <EFF> &eff_l_block)
   {
-  arma::field<arma::mat> out(3);
 	SNPPROC cSP;
 	IO cIO; 
 	ifstream bed_in(bed_str.c_str(), ios::binary);
@@ -357,12 +356,12 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 		// z_s(i) = info_s_block[i]->z;
 		z_s(i) = info_s_block[i].z;
 	// small effect genotype matrix
-	mat geno_s = zeros<mat>(n_obs, num_s_block); //geno_s gets filled to become the matrix Xs
+	mat geno_s = zeros<mat>(n_ref, num_s_block); //geno_s gets filled to become the matrix Xs
 	for (int i = 0; i < num_s_block; ++i) {
-		vec geno = zeros<vec>(n_obs);
+		vec geno = zeros<vec>(n_ref);
 		double maf = 0.0; 
 		// cIO.readSNPIm(info_s_block[i]->pos, n_ref, idv, bed_in, geno, maf);
-		cIO.readSNPIm(info_s_block[i].pos, n_obs, idv, bed_in, geno, maf);
+		cIO.readSNPIm(info_s_block[i].pos, n_ref, idv, bed_in, geno, maf);
 		cSP.nomalizeVec(geno);
 		geno_s.col(i) = geno;
 	}
@@ -373,7 +372,7 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 	eff_pseudo.maf = 0.0; 
 	eff_pseudo.beta = 0.0; 
 	
-	vec beta_s = zeros<vec>(num_s_block); 
+	vec beta_s = zeros<vec>(num_s_block); // is this correct??
 	// INFO large effect SNPs 
 	if (num_l_block != 0){ //why is this needed??? wouldn't we only be using this function when num_l_block >0??
 		// vector <INFO*> info_l_block(num_l_block);
@@ -386,16 +385,16 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 			// z_l(i) = info_l_block[i]->z;
 			z_l(i) = info_l_block[i].z;
 		// large effect matrix
-		mat geno_l = zeros<mat>(n_obs, num_l_block); //geno_l gets filled to become Xl matrix (in notation of supplemental materials)
+		mat geno_l = zeros<mat>(n_ref, num_l_block); //geno_l gets filled to become Xl matrix (in notation of supplemental materials)
 		for (int i = 0; i < num_l_block; ++i) {
-			vec geno = zeros<vec>(n_obs);
+			vec geno = zeros<vec>(n_ref);
 			double maf = 0.0; 
 			// cIO.readSNPIm(info_l_block[i]->pos, n_ref, idv, bed_in, geno, maf);
-			cIO.readSNPIm(info_l_block[i].pos, n_obs, idv, bed_in, geno, maf);
+			cIO.readSNPIm(info_l_block[i].pos, n_ref, idv, bed_in, geno, maf);
 			cSP.nomalizeVec(geno);
 			geno_l.col(i) = geno;
 		}
-		arma::vec beta_l= zeros<vec>(num_l_block);
+		arma::vec beta_l= zeros<vec>(num_l_block);// is this needed??
 		
 		arma::field <arma::mat> out = estBlock(n_ref,
                     n_obs, 
@@ -406,6 +405,18 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
                     z_l, 
                     beta_s,
                     beta_l);
+		// summary 
+		for(int i = 0; i < num_l_block; i++) {
+		  EFF eff_l; 
+		  // eff_l.snp = info_l_block[i]->snp;
+		  // eff_l.a1 = info_l_block[i]->a1;
+		  // eff_l.maf = info_l_block[i]->maf;
+		  eff_l.snp = info_l_block[i].snp;
+		  eff_l.a1 = info_l_block[i].a1;
+		  eff_l.maf = info_l_block[i].maf;
+		  eff_l.beta = beta_l(i);
+		  eff_l_block[i] = eff_l;
+		}
 			}
 	if (num_l_block == 0){
 	  arma::field <arma::mat> out = estBlock(n_ref, 
@@ -414,6 +425,22 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
                             geno_s, 
                             z_s, 
                             beta_s);//returns Sigma_ss for a block
+	  eff_l_block[0].snp = eff_pseudo.snp;
+	  eff_l_block[0].a1 = eff_pseudo.a1;
+	  eff_l_block[0].maf = eff_pseudo.maf;
+	  eff_l_block[0].beta = eff_pseudo.beta;
+	}
+	// output small effect
+	for(int i = 0; i < num_s_block; i++) {
+	  EFF eff_s; 
+	  // eff_s.snp = info_s_block[i]->snp;
+	  // eff_s.a1 = info_s_block[i]->a1;
+	  // eff_s.maf = info_s_block[i]->maf;
+	  eff_s.snp = info_s_block[i].snp;
+	  eff_s.a1 = info_s_block[i].a1;
+	  eff_s.maf = info_s_block[i].maf;
+	  eff_s.beta = beta_s(i); 
+	  eff_s_block[i] = eff_s;
 	}
 	return out; 
 }
@@ -447,13 +474,13 @@ arma::field < arma::mat > DBSLMMFIT::calcBlock(int n_ref,
 		// z_s(i) = info_s_block[i]->z;
 		z_s(i) = info_s_block[i].z;//populate z_s with the z values from the INFO object
 	// small effect genotype matrix
-	mat geno_s = zeros<mat>(n_obs, num_s_block);// Is num_s_block the number of blocks with small effects only? Or something else???
+	mat geno_s = zeros<mat>(n_ref, num_s_block);// Is num_s_block the number of blocks with small effects only? Or something else???
 	// num_s_block must be the number of small effect SNPs in the block. n_obs and num_s_block are dimensions for the matrix
 	for (int i = 0; i < num_s_block; ++i) {
-		vec geno = zeros<vec>(n_obs); //init. geno as arma::vec of length n_obs
+		vec geno = zeros<vec>(n_ref); //init. geno as arma::vec of length n_obs
 		double maf = 0.0; //initialize maf.
 		// cIO.readSNPIm(info_s_block[i]->pos, n_obs, idv, bed_in, geno, maf);
-		cIO.readSNPIm(info_s_block[i].pos, n_obs, idv, bed_in, geno, maf);// this line populates geno
+		cIO.readSNPIm(info_s_block[i].pos, n_ref, idv, bed_in, geno, maf);// this line populates geno
 		cSP.nomalizeVec(geno); // then, normalize geno
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
@@ -464,6 +491,18 @@ arma::field < arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                            geno_s, 
                            z_s, 
                            beta_s);
+	// output small effect
+	for(int i = 0; i < num_s_block; i++) {
+	  EFF eff_s; 
+	  // eff_s.snp = info_s_block[i]->snp;
+	  // eff_s.a1 = info_s_block[i]->a1;
+	  // eff_s.maf = info_s_block[i]->maf;
+	  eff_s.snp = info_s_block[i].snp;
+	  eff_s.a1 = info_s_block[i].a1;
+	  eff_s.maf = info_s_block[i].maf;
+	  eff_s.beta = beta_s(i); 
+	  eff_s_block[i] = eff_s;
+	}
 	return out; 
 }
 
