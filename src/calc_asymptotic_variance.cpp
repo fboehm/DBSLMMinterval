@@ -120,10 +120,6 @@ arma::mat calc_var_betas(arma::mat Sigma_ss,
 arma::mat BlockDiag( arma::field<arma::mat> x ) {
   
   unsigned int len = x.n_elem;
-  cout << "number of elements in field is " << len << endl;
-  cout << x(2) << endl;
-  cout << x(1) << endl;
-  cout << x(0) << endl;
   int drow = 0;
   int dcol = 0;
   arma::ivec rvec(len);
@@ -131,15 +127,10 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
   //get dimensions of each matrix in the field
   for(unsigned int i = 0; i < len; i++) {
     rvec(i) = x(i).n_rows ; 
-    cout << "rvec(i) is " << rvec(i) << endl; 
     drow += rvec(i) ;
-    cout << "drow is " << drow << endl;
     cvec(i) = x(i).n_cols ; 
     dcol += cvec(i);
   }
-  cout << "number of rows in big block diagonal is " << drow << endl;
-  cout << "number of columns in big block diagonal is " << dcol << endl;
-  
   //initialize matrix to be returned
   arma::mat X(drow, dcol, fill::zeros);
   int idx_row = 0;
