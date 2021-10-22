@@ -127,12 +127,12 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
   arma::ivec cvec(len);
   //get dimensions of each matrix in the field
   for(unsigned int i=0; i< len; i++) {
-    rvec(i) = x(i).n_rows ; 
+    rvec(i) = x(i, 1).n_rows ; 
     cout << "rvec(i) is " << rvec(i) << endl; 
     drow += rvec(i) ;
     cout << "drow is " << drow << endl;
-    cvec(i) = x(i).n_cols ; 
-    dcol += cvec(i);
+    cvec(i) = x(i, 1).n_cols ; 
+    dcol += cvec(i, 1);
   }
   cout << "number of rows in big block diagonal is " << drow << endl;
   cout << "number of columns in big block diagonal is " << dcol << endl;
@@ -146,7 +146,7 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
     X.submat(idx_row, 
              idx_col, 
              idx_row + rvec(i) - 1, 
-             idx_col + cvec(i) - 1) = x(i) ;
+             idx_col + cvec(i) - 1) = x(i, 1) ;
     idx_row = idx_row + rvec(i) ;
     idx_col = idx_col + cvec(i);
   }
