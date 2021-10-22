@@ -291,7 +291,8 @@ int DBSLMMFIT::est(int n_ref,
               info_s_Block[b],
 						  num_s_vec[b], 
               eff_s_Block[b]);
-			  
+			  cout << "number of rows: " << out(0).n_rows << endl;
+			  cout << "number of columns: " << out(0).n_cols << endl; 
 			  Sigma_ss(b) = out(0);
 			}
 			// eff of small effect SNPs
