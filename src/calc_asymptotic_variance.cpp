@@ -132,7 +132,7 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
     drow += rvec(i) ;
     cout << "drow is " << drow << endl;
     cvec(i) = x(i, 1).n_cols ; 
-    dcol += cvec(i, 1);
+    dcol += cvec(i);
   }
   cout << "number of rows in big block diagonal is " << drow << endl;
   cout << "number of columns in big block diagonal is " << dcol << endl;
