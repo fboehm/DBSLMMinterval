@@ -1,12 +1,6 @@
 #define ARMA_DONT_USE_WRAPPER
 
-#include <iostream>
-#include <vector>
 #include <armadillo>
-#include <string>
-#include <boost/algorithm/string.hpp> // split
-#include <tuple> // std::tuple, std::get, std::tie, std::ignore
-#include <algorithm> 
 
 
 arma::mat calc_asymptotic_variance(arma::mat Sigma_ll, 

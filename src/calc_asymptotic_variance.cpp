@@ -1,11 +1,6 @@
 #define ARMA_DONT_USE_WRAPPER
 
-#include <iostream>
-#include <vector>
 #include <armadillo>
-#include <string>
-#include <boost/algorithm/string.hpp> // split
-#include <algorithm>
 
 #include "../include/calc_asymptotic_variance.h"
 
