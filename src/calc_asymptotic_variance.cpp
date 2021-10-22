@@ -113,7 +113,7 @@ arma::mat calc_var_betas(arma::mat Sigma_ss,
 
 //' Construct a block diagonal matrix from a collection of matrices
 //' 
-//' @param x a field of matrices, possibly of different sizes
+//' @param x a field of matrices, possibly of different sizes. Some matrices may have no rows and no columns
 //' @return a block diagonal matrix
 //' @reference https://stackoverflow.com/questions/29198893/block-diagonal-matrix-armadillo
 
