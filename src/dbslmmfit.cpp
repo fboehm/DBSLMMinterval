@@ -178,7 +178,7 @@ int DBSLMMFIT::est(int n_ref,
                                                 eff_l_Block[b]
 			  );
 			  //transfer 'out' into the 3 fields
-			  Sigma_ss(b) = out(0);
+			  Sigma_ss(b) = out(0);// is this the correct index value?? What about for a whole genome???
 			  Sigma_sl(b) = out(1);
 			  Sigma_ll(b) = out(2);
 
@@ -210,6 +210,12 @@ int DBSLMMFIT::est(int n_ref,
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
 	Sigma_ss_matrix.save("Sigma_ss.dat");
+	arma::mat Sigma_sl_matrix = BlockDiag(Sigma_sl);
+	//armadillo save the matrix
+	Sigma_ss_matrix.save("Sigma_sl.dat");
+	arma::mat Sigma_ll_matrix = BlockDiag(Sigma_ll);
+	//armadillo save the matrix
+	Sigma_ss_matrix.save("Sigma_ll.dat");
 	return 0;
 }//end function
 
@@ -306,7 +312,6 @@ int DBSLMMFIT::est(int n_ref,
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
 	Sigma_ss_matrix.save("Sigma_ss.dat");
-	cout << "Output sentence";
 	return 0;
 }
 
