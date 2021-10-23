@@ -299,6 +299,7 @@ int DBSLMMFIT::est(int n_ref,
 						  num_s_vec[b], 
               eff_s_Block[b]);
 			  int index = floor(i / B_MAX) * B_MAX + b;
+			  cout <<"index: " << index << endl; 
 			  Sigma_ss(index) = out(0);
 			}
 			// eff of small effect SNPs
