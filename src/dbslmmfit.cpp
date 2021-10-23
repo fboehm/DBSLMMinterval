@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <armadillo>
 #include <string>
-#include <tuple> // std::tuple, std::get, std::tie, std::ignore
+
 
 #include "omp.h"
 
@@ -177,10 +177,11 @@ int DBSLMMFIT::est(int n_ref,
                                                 eff_s_Block[b], 
                                                 eff_l_Block[b]
 			  );
+			  int index = Rcpp::floor(i / B_MAX) * B_MAX + b;
 			  //transfer 'out' into the 3 fields
-			  Sigma_ss(b) = out(0);// is this the correct index value?? What about for a whole genome???
-			  Sigma_sl(b) = out(1);
-			  Sigma_ll(b) = out(2);
+			  Sigma_ss(index) = out(0);// is this the correct index value?? What about for a whole genome???
+			  Sigma_sl(index) = out(1);
+			  Sigma_ll(index) = out(2);
 
 			} // end loop over b
 			// eff of small effect SNPs
@@ -232,7 +233,7 @@ int DBSLMMFIT::est(int n_ref,
   arma::field <arma::mat> Sigma_ss(num_block);
 	// get the maximum number of each block
 	int count_s = 0;
-	vec num_s = zeros<vec>(num_block); 
+	vec num_s = zeros<vec>(num_block); //num_s has one entry per block
 	for (int i = 0; i < num_block; i++) {
 		for (size_t j = count_s; j < info_s.size(); j++) {
 			if(info_s[j].block == i){ 
@@ -244,7 +245,7 @@ int DBSLMMFIT::est(int n_ref,
 		}
 	}
 	count_s = 0; // reset
-	double len_s = num_s.max(); 
+	double len_s = num_s.max(); //len_s is the number of small effect markers in the block with the most
 	
 	int B = 0;
 	int B_MAX = 60;
@@ -297,7 +298,8 @@ int DBSLMMFIT::est(int n_ref,
               info_s_Block[b],
 						  num_s_vec[b], 
               eff_s_Block[b]);
-			  Sigma_ss(b) = out(0);
+			  int index = Rcpp::floor(i / B_MAX) * B_MAX + b;
+			  Sigma_ss(index) = out(0);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -307,8 +309,8 @@ int DBSLMMFIT::est(int n_ref,
 			}
 			B = 0;
 			num_s_vec.clear();
-		}
-	}
+		} // end if B == B_MAX
+	} //end loop over i
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
 	Sigma_ss_matrix.save("Sigma_ss.dat");
