@@ -136,7 +136,7 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
       X.submat(idx_row, 
                idx_col, 
                idx_row + rvec(i) - 1, 
-               idx_col + cvec(i) - 1) = x(i, 1) ;
+               idx_col + cvec(i) - 1) = x(i) ;
       idx_row = idx_row + rvec(i) ;
       idx_col = idx_col + cvec(i);
     }
