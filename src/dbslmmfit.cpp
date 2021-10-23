@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <armadillo>
 #include <string>
-#include "../include/Rcpp.h"
+#include <math.h>
 
 #include "omp.h"
 
@@ -177,7 +177,7 @@ int DBSLMMFIT::est(int n_ref,
                                                 eff_s_Block[b], 
                                                 eff_l_Block[b]
 			  );
-			  int index = Rcpp::floor(i / B_MAX) * B_MAX + b;
+			  int index = floor(i / B_MAX) * B_MAX + b;
 			  //transfer 'out' into the 3 fields
 			  Sigma_ss(index) = out(0);// is this the correct index value?? What about for a whole genome???
 			  Sigma_sl(index) = out(1);
@@ -298,7 +298,7 @@ int DBSLMMFIT::est(int n_ref,
               info_s_Block[b],
 						  num_s_vec[b], 
               eff_s_Block[b]);
-			  int index = Rcpp::floor(i / B_MAX) * B_MAX + b;
+			  int index = floor(i / B_MAX) * B_MAX + b;
 			  Sigma_ss(index) = out(0);
 			}
 			// eff of small effect SNPs
