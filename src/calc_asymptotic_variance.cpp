@@ -13,7 +13,7 @@ using namespace arma;
 //' @param Sigma_ls Sigma_ls matrix for the whole genome
 //' @param Sigma_ss Sigma_ss matrix for the whole genome
 //' @param sigma2_s estimated value of sigma^2_s
-//' @param n sample size
+//' @param n sample size for observed data (not the reference panel)
 //' @param Xl_test genotypes matrix for large effect SNPs for test subjects
 //' @param Xs_test genotypes matrix for small effect SNPs for test subjects
 //' @return variance of predicted y values
