@@ -210,13 +210,16 @@ int DBSLMMFIT::est(int n_ref,
 	//arma::mat Sig_ss = make_block_diagonal_from_tuples()
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
-	Sigma_ss_matrix.save("Sigma_ss.dat");
+	//Sigma_ss_matrix.save("Sigma_ss.dat");
 	arma::mat Sigma_sl_matrix = BlockDiag(Sigma_sl);
 	//armadillo save the matrix
-	Sigma_ss_matrix.save("Sigma_sl.dat");
+	//Sigma_ss_matrix.save("Sigma_sl.dat");
 	arma::mat Sigma_ll_matrix = BlockDiag(Sigma_ll);
 	//armadillo save the matrix
-	Sigma_ss_matrix.save("Sigma_ll.dat");
+	//Sigma_ss_matrix.save("Sigma_ll.dat");
+	// calculate asymptotic variance
+	
+	
 	return 0;
 }//end function
 
@@ -314,7 +317,7 @@ int DBSLMMFIT::est(int n_ref,
 	} //end loop over i
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
-	Sigma_ss_matrix.save("Sigma_ss.dat");
+	//Sigma_ss_matrix.save("Sigma_ss.dat");
 	return 0;
 }
 

@@ -3,6 +3,7 @@
 #include <math.h>       /* floor */
 
 using namespace std;
+using namespace arma;
 
 //' Calculate qplus alpha and qminus alpha for a vector of LOO residuals
 //' 
