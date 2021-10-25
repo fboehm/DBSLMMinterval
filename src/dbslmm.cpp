@@ -260,7 +260,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
     // input large effect summary data
     cout << "Reading summary data of large effect SNPs from [" << cPar.l << "]" << endl;
     vector <SUMM> summ_l;
-    int n_l = cIO.readSumm(cPar.l, separate, summ_l);
+    int n_l = cIO.readSumm(cPar.l, separate, summ_l);//number of large effect SNPs
     // vector <POS> inter_l;
     bool badsnp_l[n_l] = {false};
     cSP.matchRef(summ_l, ref_bim, inter_l, cPar.mafMax, badsnp_l);
