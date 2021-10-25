@@ -2,6 +2,8 @@
 #include <math.h>       /* floor */
 #include <algorithm> /* std::sort, std::set_difference */
 #include "../include/subset_to_test_and_training.h"
+#include <random>
+
 
 using namespace arma;
 using namespace std;

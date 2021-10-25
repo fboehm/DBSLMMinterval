@@ -1,5 +1,6 @@
 #include <armadillo>
 #include <math.h>       /* floor */
+#include <random>
 
 std::vector<int> fisher_yates_shuffle(std::size_t size, 
                                       std::size_t max_size, 
