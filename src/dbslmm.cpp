@@ -262,7 +262,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
     vector <SUMM> summ_l;
     int n_l = cIO.readSumm(cPar.l, separate, summ_l);//number of large effect SNPs
     // vector <POS> inter_l;
-    bool badsnp_l[n_l] = {false};
+    bool badsnp_l[n_l] = {false}; //badsnp_l is a n_l-long boolean vector
     cSP.matchRef(summ_l, ref_bim, inter_l, cPar.mafMax, badsnp_l);
     if (inter_l.size() != 0){
       int num_block_l = cSP.addBlock(inter_l, block_dat, info_l); 
