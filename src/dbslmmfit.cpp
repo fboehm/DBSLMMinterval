@@ -201,13 +201,6 @@ int DBSLMMFIT::est(int n_ref,
 			num_s_vec.clear();
 		}//end if statement starting on line: if (B == B_MAX...
 	}//end loop for i
-	//assemble from vector of tuples, the snp correlation matrices into 3 big sparse matrices
-	// first, Sigma_ss - block diagonal matrix
-	//iterate over length of snpcorrs vector
-	// for i = 0 to length(snpcorrs) - 1:
-	// count_s is the number of small effect SNPs in the genome
-	// So, Sigma_ss is a count_s by count_s matrix
-	//arma::mat Sig_ss = make_block_diagonal_from_tuples()
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
 	//Sigma_ss_matrix.save("Sigma_ss.dat");
