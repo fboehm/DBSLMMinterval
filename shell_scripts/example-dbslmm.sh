@@ -17,7 +17,7 @@ nobs=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $5}'`
 nmis=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $4}'`
 n=$(echo "${nobs}+${nmis}" | bc -l)
 ## execute Rscript
-Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} --plink ${plink} --dbslmm ${dbslmm} --ref ${ref}${chr} --n ${n} --nsnp ${m} --type d --model DBSLMM --block ${blockf}${chr}.bed --h2 ${h2} --h2f 5
+Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} --plink ${plink} --dbslmm ${dbslmm} --ref ${ref}${chr} --n ${n} --nsnp ${m} --type d --model DBSLMM --block ${blockf}${chr}.bed --h2 ${h2} --h2f 0.5
 ### Predict
 bfilete=${DIR}/test_dat/test_chr
 est=${DIR}/test_dat/out/summary_gemma_chr
