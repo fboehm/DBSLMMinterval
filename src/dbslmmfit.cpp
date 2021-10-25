@@ -217,9 +217,23 @@ int DBSLMMFIT::est(int n_ref,
 	arma::mat Sigma_ll_matrix = BlockDiag(Sigma_ll);
 	//armadillo save the matrix
 	//Sigma_ss_matrix.save("Sigma_ll.dat");
-	// calculate asymptotic variance
-	
-	
+	// calculate variances for betahat_s and betahat_l
+	arma::mat Ainv = calc_A_inverse(Sigma_ss_matrix, sigma_s, n_obs);
+	arma::mat var_bl = calc_var_betal(Sigma_ll_matrix, 
+                                   arma::trans(Sigma_sl_matrix), 
+                                   Sigma_ss_matrix, 
+                                   Ainv, 
+                                   n_obs);
+	arma::mat var_bs = calc_var_betas(Sigma_ss_matrix, 
+                                   arma::trans(Sigma_sl_matrix), 
+                                   Ainv,
+                                   sigma_s,
+                                   n_obs,
+                                   var_bl);
+	//save the cov matrices for betahat_s and betahat_l
+  var_bl.save("var_bl.dat");
+  var_bs.save("var_bs.dat");
+
 	return 0;
 }//end function
 
