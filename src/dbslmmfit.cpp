@@ -446,17 +446,19 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
 	  eff_s.beta = beta_s(i); 
 	  eff_s_block[i] = eff_s;
 	}
-	arma::field <arma::mat> out (3);
+	arma::field <arma::mat> out (5);// 1: Sigma_ss, 2: Sigma_sl, 3: Sigma_ll, 4: geno_s, 5:geno_l
 	if (num_l_block == 0) {
-	  out = estBlock(n_ref, 
+	  arma::field <arma::mat> foo = estBlock(n_ref, 
        n_obs, 
        sigma_s, 
        geno_s, 
        z_s, 
        beta_s);
+	  out(1) = foo(1);
+	  out(4) = geno_s;
 	  }
 	else {
-	  out = estBlock(n_ref,
+	  arma::field <arma::mat> foo = estBlock(n_ref,
        n_obs, 
        sigma_s, 
        geno_s, 
@@ -465,8 +467,13 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
        z_l, 
        beta_s,
        beta_l);
+	  out(1) = foo(1);
+	  out(2) = foo(2);
+	  out(3) = foo(3);
+	  out(4) = geno_s;
+	  out(5) = geno_l;
 	};
-	return out; 
+	return out; //need to store geno_s and geno_l, too!!!
 }
 
 // estimate only small effect for each block
@@ -509,12 +516,15 @@ arma::field < arma::mat > DBSLMMFIT::calcBlock(int n_ref,
 		geno_s.col(i) = geno; //write geno to a column of geno_s matrix
 	}
 	arma::vec beta_s= zeros<vec>(num_s_block);
-	arma::field <arma::mat> out = estBlock(n_ref, 
+	arma::field <arma::mat> foo = estBlock(n_ref, 
                            n_obs, 
                            sigma_s, 
                            geno_s, 
                            z_s, 
                            beta_s);
+	arma::field <arma::mat> out(5);
+	out(1) = foo(1);
+	out(4) = geno_s;
 	// output small effect
 	for(int i = 0; i < num_s_block; i++) {
 	  EFF eff_s; 
