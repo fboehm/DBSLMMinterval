@@ -343,7 +343,7 @@ int DBSLMMFIT::est(int n_ref,
 //' @param num_l_block
 //' @param eff_s_block effects object for small effects per block? 
 //' @param eff_l_block effects object for large effects per block?
-//' @return a armadillo field containing arma::mat objects
+//' @return a armadillo field containing arma::mat objects: 1: Sigma_ss, 2: Sigma_sl, 3: Sigma_ll, 4: geno_s, 5:geno_l
 // estimate large and small effect for each block
 arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref, 
                                             int n_obs, 
@@ -454,8 +454,8 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
        geno_s, 
        z_s, 
        beta_s);
-	  out(1) = foo(1);
-	  out(4) = geno_s;
+	  out(0) = foo(1);
+	  out(3) = geno_s;
 	  }
 	else {
 	  arma::field <arma::mat> foo = estBlock(n_ref,
@@ -467,11 +467,11 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
        z_l, 
        beta_s,
        beta_l);
+	  out(0) = foo(0);
 	  out(1) = foo(1);
 	  out(2) = foo(2);
-	  out(3) = foo(3);
-	  out(4) = geno_s;
-	  out(5) = geno_l;
+	  out(3) = geno_s;
+	  out(4) = geno_l;
 	};
 	return out; //need to store geno_s and geno_l, too!!!
 }
@@ -523,8 +523,8 @@ arma::field < arma::mat > DBSLMMFIT::calcBlock(int n_ref,
                            z_s, 
                            beta_s);
 	arma::field <arma::mat> out(5);
-	out(1) = foo(1);
-	out(4) = geno_s;
+	out(0) = foo(0);
+	out(3) = geno_s;
 	// output small effect
 	for(int i = 0; i < num_s_block; i++) {
 	  EFF eff_s; 
