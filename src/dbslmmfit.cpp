@@ -332,7 +332,8 @@ int DBSLMMFIT::est(int n_ref,
 
 //' Estimate large and small effects for each block
 //' 
-//' @param n_obs sample size of data
+//' @param n_ref sample size of reference panel
+//' @param n_obs sample size 
 //' @param sigma_s estimate of $sigma^2_s$
 //' @param idv 
 //' @param bed_str filename for bed file
@@ -596,7 +597,7 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 //' @param z_l z for large effect SNPs in this block
 //' @param beta_s coefficient estimates for small effect SNPs in this block
 //' @param beta_l coefficient estimates for large effect SNPs in this block 
-//' @return a arma::field containing 3 matrices: Sigma_ss, Sigma_ls, and Sigma_ll
+//' @return a arma::field containing 3 matrices: Sigma_ss, Sigma_sl, and Sigma_ll
 
 arma::field< arma::mat > DBSLMMFIT::estBlock(
                                             int n_ref, 
@@ -655,6 +656,10 @@ arma::field< arma::mat > DBSLMMFIT::estBlock(
 	result(0) = SIGMA_ss;
 	result(1) = arma::trans(SIGMA_ls);
 	result(2) = SIGMA_ll;
+	cout << "number of rows in result(0): " << result(0).n_rows << endl;
+	cout << "number of rows in result(1): " << result(1).n_rows << endl;
+	cout << "number of rows in result(2): " << result(2).n_rows << endl;
+	
 	return(result);
 }
 
@@ -685,9 +690,6 @@ arma::field <arma::mat> DBSLMMFIT::estBlock(int n_ref,
 	beta_s = sqrt(n_obs) * sigma_s * z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl; 
 	arma::field <arma::mat> result(3);
 	result(0) = SIGMA_ss;
-	cout << "length of result: " <<  result.n_elem << endl;
-	cout << "number of rows in SIGMA_ss: " << SIGMA_ss.n_rows << endl; 
 	cout << "number of rows in result(0): " << result(0).n_rows << endl;
-	cout << "in range check for result: " << result.in_range(0) << endl; 
 	return (result); 
 }
