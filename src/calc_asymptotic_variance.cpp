@@ -156,13 +156,15 @@ arma::mat ConcatenateColumns( arma::field<arma::mat> x ) {
   unsigned int nrow = x(1).n_rows;
   int dcol = 0;
   arma::ivec cvec(len);
-  //get dimensions of each matrix in the field
+  //get number of columns of each matrix in the field
   for(unsigned int i = 0; i < len; i++) {
     cvec(i) = x(i).n_cols ; 
     dcol += cvec(i);
   }
   //initialize matrix to be returned
   arma::mat X(nrow, dcol, fill::zeros);
+  cout << "number of rows: " << nrow << endl; 
+  cout << "number of columns: " << dcol << endl; 
   
   int idx_col = 0;
   // place matrices at correct places
