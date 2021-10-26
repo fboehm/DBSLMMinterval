@@ -332,7 +332,8 @@ int DBSLMMFIT::est(int n_ref,
 
 //' Estimate large and small effects for each block
 //' 
-//' @param n_obs sample size of data
+//' @param n_ref sample size of reference panel
+//' @param n_obs sample size 
 //' @param sigma_s estimate of $sigma^2_s$
 //' @param idv 
 //' @param bed_str filename for bed file
@@ -655,6 +656,12 @@ arma::field< arma::mat > DBSLMMFIT::estBlock(
 	result(0) = SIGMA_ss;
 	result(1) = arma::trans(SIGMA_ls);
 	result(2) = SIGMA_ll;
+	cout << "length of result: " <<  result.n_elem << endl;
+	cout << "number of rows in SIGMA_ss: " << SIGMA_ss.n_rows << endl; 
+	cout << "number of rows in result(0): " << result(0).n_rows << endl;
+	cout << "number of rows in result(1): " << result(1).n_rows << endl;
+	cout << "number of rows in result(2): " << result(2).n_rows << endl;
+	
 	return(result);
 }
 
@@ -688,6 +695,5 @@ arma::field <arma::mat> DBSLMMFIT::estBlock(int n_ref,
 	cout << "length of result: " <<  result.n_elem << endl;
 	cout << "number of rows in SIGMA_ss: " << SIGMA_ss.n_rows << endl; 
 	cout << "number of rows in result(0): " << result(0).n_rows << endl;
-	cout << "in range check for result: " << result.in_range(0) << endl; 
 	return (result); 
 }
