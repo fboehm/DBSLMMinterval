@@ -219,7 +219,7 @@ int DBSLMMFIT::est(int n_ref,
 	arma::mat geno_l_matrix = ConcatenateColumns(geno_l_field);
 	arma::mat vv = calc_asymptotic_variance(Sigma_ll_matrix, 
                           arma::trans(Sigma_sl_matrix), 
-                           Sigma_ss, 
+                           Sigma_ss_matrix, 
                           sigma_s, 
                           n_obs,
                           geno_l_matrix, 
