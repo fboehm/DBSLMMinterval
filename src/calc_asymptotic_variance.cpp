@@ -37,7 +37,7 @@ arma::mat calc_asymptotic_variance(arma::mat Sigma_ll,
                                     sigma2_s,
                                     n,
                                     var_bl);
-  arma::mat result = arma::trans(Xl_test) * var_bl * Xl_test + arma::trans(Xs_test) * var_bs * Xs_test;
+  arma::mat result = Xl_test * var_bl * arma::trans(Xl_test) + Xs_test * var_bs * arma::trans(Xs_test);
   return(result);
 }
 
