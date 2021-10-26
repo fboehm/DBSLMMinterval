@@ -145,3 +145,35 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
 }
 
 
+//' Construct a block diagonal matrix from a collection of matrices
+//' 
+//' @param x a field of matrices, possibly of different sizes, but all with the same number of rows. 
+//' @return a matrix
+
+arma::mat ConcatenateColumns( arma::field<arma::mat> x ) {
+  
+  unsigned int len = x.n_elem;
+  unsigned int nrow = x(1).n_rows;
+  int dcol = 0;
+  arma::ivec cvec(len);
+  //get dimensions of each matrix in the field
+  for(unsigned int i = 0; i < len; i++) {
+    cvec(i) = x(i).n_cols ; 
+    dcol += cvec(i);
+  }
+  //initialize matrix to be returned
+  arma::mat X(nrow, dcol, fill::zeros);
+  
+  int idx_col = 0;
+  // place matrices at correct places
+  for(unsigned int i=0; i < len; i++) {
+    if (cvec(i) > 0){
+      X.submat(0, 
+               idx_col, 
+               nrow - 1, 
+               idx_col + cvec(i) - 1) = x(i) ;
+      idx_col = idx_col + cvec(i);
+    }
+  }
+  return(X);
+}
