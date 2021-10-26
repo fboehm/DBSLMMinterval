@@ -214,24 +214,17 @@ int DBSLMMFIT::est(int n_ref,
 	arma::mat Sigma_ll_matrix = BlockDiag(Sigma_ll);
 	//armadillo save the matrix
 	//Sigma_ss_matrix.save("Sigma_ll.dat");
-	// calculate variances for betahat_s and betahat_l
-	arma::mat Ainv = calc_A_inverse(Sigma_ss_matrix, sigma_s, n_obs);
-	arma::mat var_bl = calc_var_betal(Sigma_ll_matrix, 
-                                   arma::trans(Sigma_sl_matrix), 
-                                   Sigma_ss_matrix, 
-                                   Ainv, 
-                                   n_obs);
-	arma::mat var_bs = calc_var_betas(Sigma_ss_matrix, 
-                                   arma::trans(Sigma_sl_matrix), 
-                                   Ainv,
-                                   sigma_s,
-                                   n_obs,
-                                   var_bl);
 	//expand geno_s_field and geno_l_field into n by ms/ml matrices
-	
-  
-  //calculate var for the predicted y values
-  
+	arma::mat geno_s_matrix = ConcatenateColumns(geno_s_field);
+	arma::mat geno_l_matrix = ConcatenateColumns(geno_l_field);
+	arma::mat vv = calc_asymptotic_variance(Sigma_ll_matrix, 
+                          arma::trans(Sigma_sl_matrix), 
+                           Sigma_ss, 
+                          sigma_s, 
+                          n_obs,
+                          geno_l_matrix, 
+                          geno_s_matrix);
+  vv.save("vv.csv", csv_ascii);
 	return 0;
 }//end function
 
