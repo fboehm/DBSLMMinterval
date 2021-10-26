@@ -230,6 +230,7 @@ int DBSLMMFIT::est(int n_ref,
 	//expand geno_s_field and geno_l_field into n by ms/ml matrices
 	
   
+  //calculate var for the predicted y values
   
 	return 0;
 }//end function
