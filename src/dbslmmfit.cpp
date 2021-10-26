@@ -119,6 +119,9 @@ int DBSLMMFIT::est(int n_ref,
 	arma::field <arma::mat> Sigma_ss(num_block);
 	arma::field <arma::mat> Sigma_sl(num_block);
 	arma::field <arma::mat> Sigma_ll(num_block);
+	arma::field <arma::mat> geno_s_field(num_block);
+	arma::field <arma::mat> geno_l_field(num_block);
+	
 	
 	for (int i = 0; i < num_block; ++i) {//iterate over blocks, ie, i indexes block number
 		// small effect SNP information
@@ -182,7 +185,8 @@ int DBSLMMFIT::est(int n_ref,
 			  Sigma_ss(index) = out(0);// is this the correct index value?? What about for a whole genome???
 			  Sigma_sl(index) = out(1);
 			  Sigma_ll(index) = out(2);
-
+        geno_s_field(index) = out(3);
+        geno_l_field(index) = out(4);
 			} // end loop over b
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -223,10 +227,10 @@ int DBSLMMFIT::est(int n_ref,
                                    sigma_s,
                                    n_obs,
                                    var_bl);
-	//save the cov matrices for betahat_s and betahat_l
-  var_bl.save("var_bl.dat");
-  var_bs.save("var_bs.dat");
-
+	//expand geno_s_field and geno_l_field into n by ms/ml matrices
+	
+  
+  
 	return 0;
 }//end function
 
@@ -279,6 +283,7 @@ int DBSLMMFIT::est(int n_ref,
 	vector < vector <INFO> > info_s_Block(B_MAX, vector <INFO> ((int)len_s));
 	vector < vector <EFF> > eff_s_Block(B_MAX, vector <EFF> ((int)len_s));
 	vector <int> num_s_vec;
+	arma::field <arma::mat> geno_s_field;
 	for (int i = 0; i < num_block; ++i) {
 		// small effect SNP information
 		vector <INFO> info_s_block; // declare object for small effect SNP info
@@ -311,6 +316,7 @@ int DBSLMMFIT::est(int n_ref,
 			  int index = floor(i / B_MAX) * B_MAX + b;
 			  cout <<"index: " << index << endl; 
 			  Sigma_ss(index) = out(0);
+			  geno_s_field(index) = out(3);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -323,6 +329,8 @@ int DBSLMMFIT::est(int n_ref,
 		} // end if B == B_MAX
 	} //end loop over i
 	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
+	//expand geno_s_field into a n by ms matrix
+	
 	//armadillo save the matrix
 	//Sigma_ss_matrix.save("Sigma_ss.dat");
 	return 0;
