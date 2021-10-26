@@ -597,7 +597,7 @@ mat DBSLMMFIT::PCGm(mat A, mat B, size_t maxiter, const double tol){//like PCGv 
 //' @param z_l z for large effect SNPs in this block
 //' @param beta_s coefficient estimates for small effect SNPs in this block
 //' @param beta_l coefficient estimates for large effect SNPs in this block 
-//' @return a arma::field containing 3 matrices: Sigma_ss, Sigma_ls, and Sigma_ll
+//' @return a arma::field containing 3 matrices: Sigma_ss, Sigma_sl, and Sigma_ll
 
 arma::field< arma::mat > DBSLMMFIT::estBlock(
                                             int n_ref, 
