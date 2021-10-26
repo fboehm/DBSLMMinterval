@@ -153,14 +153,18 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
 arma::mat ConcatenateColumns( arma::field<arma::mat> x ) {
   
   unsigned int len = x.n_elem;
-  unsigned int nrow = x(1).n_rows;
+  //unsigned int nrow = x(1).n_rows;//problem!
   int dcol = 0;
+  
   arma::ivec cvec(len);
+  arma::ivec rvec(len);
   //get number of columns of each matrix in the field
   for(unsigned int i = 0; i < len; i++) {
     cvec(i) = x(i).n_cols ; 
+    rvec(i) = x(i).n_rows;
     dcol += cvec(i);
   }
+  unsigned int nrow = max(rvec);
   //initialize matrix to be returned
   arma::mat X(nrow, dcol, fill::zeros);
   cout << "number of rows: " << nrow << endl; 
