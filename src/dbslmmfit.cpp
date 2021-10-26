@@ -656,8 +656,6 @@ arma::field< arma::mat > DBSLMMFIT::estBlock(
 	result(0) = SIGMA_ss;
 	result(1) = arma::trans(SIGMA_ls);
 	result(2) = SIGMA_ll;
-	cout << "length of result: " <<  result.n_elem << endl;
-	cout << "number of rows in SIGMA_ss: " << SIGMA_ss.n_rows << endl; 
 	cout << "number of rows in result(0): " << result(0).n_rows << endl;
 	cout << "number of rows in result(1): " << result(1).n_rows << endl;
 	cout << "number of rows in result(2): " << result(2).n_rows << endl;
@@ -692,8 +690,6 @@ arma::field <arma::mat> DBSLMMFIT::estBlock(int n_ref,
 	beta_s = sqrt(n_obs) * sigma_s * z_s_SIGMA_ss_SIGMA_ss_inv_SIGMA_sl; 
 	arma::field <arma::mat> result(3);
 	result(0) = SIGMA_ss;
-	cout << "length of result: " <<  result.n_elem << endl;
-	cout << "number of rows in SIGMA_ss: " << SIGMA_ss.n_rows << endl; 
 	cout << "number of rows in result(0): " << result(0).n_rows << endl;
 	return (result); 
 }
