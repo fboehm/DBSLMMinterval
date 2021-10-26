@@ -224,7 +224,8 @@ int DBSLMMFIT::est(int n_ref,
                           n_obs,
                           geno_l_matrix, 
                           geno_s_matrix);
-  vv.save("vv.csv", csv_ascii);
+	arma::vec vdiag = vv.diag;
+  vdiag.save("vdiag.csv", csv_ascii);
 	return 0;
 }//end function
 
