@@ -1,7 +1,7 @@
 ### change file permission for dbslmm
 DIR=~/tmp/DBSLMM
-dbslmm=../bin/dbslmminterval
-#dbslmm=${DIR}/scr/dbslmm
+#dbslmm=../bin/dbslmminterval
+dbslmm=${DIR}/scr/dbslmm
 ### Parameters for DBSLMM
 let chr=1
 DBSLMM=${DIR}/software/DBSLMM.R
@@ -24,8 +24,8 @@ est=${DIR}/test_dat/out/summary_gemma_chr
 InterPred=${DIR}/test_dat/out/internal_pred_chr
 ## plink 1.9
 plink=/usr/cluster/bin/plink-1.9
-#${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 sum --out ${InterPred}${chr}
+${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 sum --out ${InterPred}${chr}
 ## plink 2
 plink=plink2
-#${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 cols=+scoresums --out ${InterPred}${chr}
+${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 cols=+scoresums --out ${InterPred}${chr}
 
