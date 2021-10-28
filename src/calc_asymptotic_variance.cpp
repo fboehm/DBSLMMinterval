@@ -145,7 +145,7 @@ arma::mat BlockDiag( arma::field<arma::mat> x ) {
 }
 
 
-//' Construct a block diagonal matrix from a collection of matrices
+//' Construct a n by p matrix from field containing matrices with n rows, but possibly fewer columns.
 //' 
 //' @param x a field of matrices, possibly of different sizes, but all with the same number of rows. 
 //' @return a matrix
