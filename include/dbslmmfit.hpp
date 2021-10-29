@@ -34,11 +34,11 @@ using namespace arma;
 class DBSLMMFIT {
 public:
 	// estimate large and small effect
-	int est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
+	arma::field < arma::mat>  est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
 			vector <INFO> info_s, vector <INFO> info_l, int thread, 
 			vector <EFF> &eff_s, vector <EFF> &eff_l);
 	// estimate only small effect
-	int est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
+	arma::field < arma::mat>  est(int n_ref, int n_obs, double sigma_s, int num_block, vector<int> idv, string bed_str,
 			vector <INFO> info_s, int thread, vector <EFF> &eff_s);
 	// estimate large and small effect for each block
 	arma::field< arma::mat > calcBlock(int n_ref, int n_obs, 
