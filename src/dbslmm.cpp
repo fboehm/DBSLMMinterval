@@ -159,6 +159,7 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
       
     }
   }
+  cout << "from Assign: " << cPar.outfile << endl; 
   return;
 }
 
@@ -169,17 +170,18 @@ void DBSLMM::BatchRun(PARAM &cPar) {
   DBSLMMFIT cDBSF;
   
   // input check
-  // cout << "Options: " << endl;
-  // cout << "-s:      " << cPar.s << endl;
-  // cout << "-l:      " << cPar.l << endl;
-  // cout << "-r:      " << cPar.r << endl;
-  // cout << "-nsnp:   " << cPar.nsnp << endl;
-  // cout << "-n:      " << cPar.n << endl;
-  // cout << "-mafMax: " << cPar.mafMax << endl;
-  // cout << "-b:      " << cPar.b << endl;
-  // cout << "-h:      " << cPar.h << endl;
-  // cout << "-t:      " << cPar.t << endl;
-  // cout << "-eff:    " << cPar.eff << endl;
+   cout << "Options: " << endl;
+   cout << "-s:      " << cPar.s << endl;
+   cout << "-l:      " << cPar.l << endl;
+   cout << "-r:      " << cPar.r << endl;
+   cout << "-nsnp:   " << cPar.nsnp << endl;
+   cout << "-n:      " << cPar.n << endl;
+   cout << "-mafMax: " << cPar.mafMax << endl;
+   cout << "-b:      " << cPar.b << endl;
+   cout << "-h:      " << cPar.h << endl;
+   cout << "-t:      " << cPar.t << endl;
+   cout << "-eff:    " << cPar.eff << endl;
+   cout << "-outfile:     " << cPar.outfile << endl; 
   
   // check files
   string ref_fam_str = cPar.r + ".fam"; //next line below declares the ifstream objects, including an ifstream object for reading the fam file! 
