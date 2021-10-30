@@ -39,6 +39,9 @@ int main(int argc, char * argv[])
     cDB.printHelp();
     return EXIT_SUCCESS;
   }
+  for (int i = 0; i < argc; ++i)
+    cout << argv[i] << "\n";
+  
   cDB.Assign(argc, argv, cPar);
   
   cout<< "From main, cPar.outfile is: " << cPar.outfile << endl; 
