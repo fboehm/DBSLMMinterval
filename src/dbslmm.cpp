@@ -150,7 +150,7 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
       str.assign(argv[i]);
       cPar.eff = str;
     }
-    else if (strcmp(argv[i], "--outfile") == 0){
+    else if (strcmp(argv[i], "--outfile") == 0 || strcmp(argv[i], "-outfile") == 0){
       if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
       ++i;
       str.clear();
