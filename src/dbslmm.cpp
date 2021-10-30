@@ -294,7 +294,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
     double sigma_s = cPar.h / (double)cPar.nsnp; // this tells us that sigma_s *is* $\hat\sigma_s^2$!
     cout << "Fitting model..." << endl;
     arma::field < arma::mat> out = cDBSF.est(n_ref, 
-              cPar.n, 
+              cPar.n,
               sigma_s, 
               num_block_s, //
               idv, 
@@ -304,8 +304,8 @@ void DBSLMM::BatchRun(PARAM &cPar) {
               cPar.t, 
               eff_s, 
               eff_l); 
-    //out.save(cPar.outfile, arma::arma_binary);
-    out.save("foo.dat", arma::arma_binary);//need to rename in bash file
+    out.save(c_str(cPar.outfile), arma::arma_binary);
+    //out.save("foo.dat", arma::arma_binary);//need to rename in bash file
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
     
@@ -342,6 +342,8 @@ void DBSLMM::BatchRun(PARAM &cPar) {
               cPar.t, 
               eff_s
     ); //call est for small effects only!
+    out.save("foo.dat", arma::arma_binary);//need to rename in bash file
+    
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
     
