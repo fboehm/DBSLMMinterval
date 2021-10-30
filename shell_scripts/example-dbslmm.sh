@@ -10,6 +10,7 @@ summf=${DIR}/test_dat/summary_gemma_chr
 outPath=${DIR}/test_dat/out/
 plink=/usr/cluster/bin/plink-1.9
 ref=${DIR}/test_dat/ref_chr
+outfile=armafield-example-Chr${chr}.dat
 
 blockf=${DIR}/block_data/EUR/chr
 m=`cat ${summf}${chr}.assoc.txt | wc -l` 
@@ -17,7 +18,6 @@ h2=0.5
 nobs=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $5}'`
 nmis=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $4}'`
 n=$(echo "${nobs}+${nmis}" | bc -l)
-outfile="armafield-example-Chr${chr}.dat"
 ## execute Rscript
 Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
   --plink ${plink} --dbslmm ${dbslmm} --ref ${ref}${chr} --n ${n} \
