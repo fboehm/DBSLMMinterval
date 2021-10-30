@@ -38,6 +38,7 @@ public:
   double h;
   int t;
   string eff;
+  string outfile;
 };
 
 class DBSLMM {

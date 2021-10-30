@@ -46,11 +46,9 @@ using namespace arma;
 //' @param thread number of threads to use
 //' @param eff_s small effects SNP effects object
 //' @param eff_l large effects SNP effects object
-//' @param fam_file path to the plink fam file
-//' @param seed a seed (positive integer) for the pseudo RNG
 //' @return zero is returned
 // estimate large and small effect
-int DBSLMMFIT::est(int n_ref,
+auto DBSLMMFIT::est(int n_ref,
                    int n_obs, 
                    double sigma_s, 
                    int num_block, //is this the number of markers in a single block? Or the number of blocks in the genome?
@@ -116,12 +114,7 @@ int DBSLMMFIT::est(int n_ref,
                                       vector <EFF> ((int)len_l)); //declare eff_l_Block & eff_s_Block
 	vector <int> num_s_vec, num_l_vec; //declare num_s_vec & num_l_vec
 	//declare fields 
-	arma::field <arma::mat> Sigma_ss(num_block);
-	arma::field <arma::mat> Sigma_sl(num_block);
-	arma::field <arma::mat> Sigma_ll(num_block);
-	arma::field <arma::mat> geno_s_field(num_block);
-	arma::field <arma::mat> geno_l_field(num_block);
-	
+	arma::field <arma::mat> result(num_block, 5);
 	
 	for (int i = 0; i < num_block; ++i) {//iterate over blocks, ie, i indexes block number
 		// small effect SNP information
@@ -181,12 +174,12 @@ int DBSLMMFIT::est(int n_ref,
                                                 eff_l_Block[b]
 			  );
 			  int index = floor(i / B_MAX) * B_MAX + b;
-			  //transfer 'out' into the 3 fields
-			  Sigma_ss(index) = out(0);// is this the correct index value?? What about for a whole genome???
-			  Sigma_sl(index) = out(1);
-			  Sigma_ll(index) = out(2);
-        geno_s_field(index) = out(3);
-        geno_l_field(index) = out(4);
+			  //transfer 'out' into the 5 entries
+			  result(index, 0) = out(0);// is this the correct index value?? What about for a whole genome???
+			  result(index, 1) = out(1);
+			  result(index, 2) = out(2);
+        result(index, 3) = out(3);
+        result(index, 4) = out(4);
 			} // end loop over b
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -205,7 +198,7 @@ int DBSLMMFIT::est(int n_ref,
 			num_s_vec.clear();
 		}//end if statement starting on line: if (B == B_MAX...
 	}//end loop for i
-	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
+	/*arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
 	//armadillo save the matrix
 	//Sigma_ss_matrix.save("Sigma_ss.dat");
 	arma::mat Sigma_sl_matrix = BlockDiag(Sigma_sl);
@@ -225,8 +218,8 @@ int DBSLMMFIT::est(int n_ref,
                           geno_l_matrix, 
                           geno_s_matrix);
 	arma::vec vdiag = vv.diag();
-  vdiag.save("vdiag.csv", csv_ascii);
-	return 0;
+  vdiag.save("vdiag.csv", csv_ascii);*/
+	return result;
 }//end function
 
 // estimate only small effect
@@ -239,7 +232,7 @@ int DBSLMMFIT::est(int n_ref,
           				 vector <INFO> info_s, 
           				 int thread, 
           				 vector <EFF> &eff_s ){
-  arma::field <arma::mat> Sigma_ss(num_block);
+  //arma::field <arma::mat> Sigma_ss(num_block);
 	// get the maximum number of each block
 	int count_s = 0;
 	vec num_s = zeros<vec>(num_block); //num_s has one entry per block
@@ -278,7 +271,8 @@ int DBSLMMFIT::est(int n_ref,
 	vector < vector <INFO> > info_s_Block(B_MAX, vector <INFO> ((int)len_s));
 	vector < vector <EFF> > eff_s_Block(B_MAX, vector <EFF> ((int)len_s));
 	vector <int> num_s_vec;
-	arma::field <arma::mat> geno_s_field;
+	arma::field <arma::mat> result(num_block, 5);
+	
 	for (int i = 0; i < num_block; ++i) {
 		// small effect SNP information
 		vector <INFO> info_s_block; // declare object for small effect SNP info
@@ -309,9 +303,9 @@ int DBSLMMFIT::est(int n_ref,
 						  num_s_vec[b], 
               eff_s_Block[b]);
 			  int index = floor(i / B_MAX) * B_MAX + b;
-			  cout <<"index: " << index << endl; 
-			  Sigma_ss(index) = out(0);
-			  geno_s_field(index) = out(3);
+			  //cout <<"index: " << index << endl; 
+			  result(index, 0) = out(0);
+			  result(index, 3) = out(3);
 			}
 			// eff of small effect SNPs
 			for (int r = 0; r < B; r++) {
@@ -323,12 +317,12 @@ int DBSLMMFIT::est(int n_ref,
 			num_s_vec.clear();
 		} // end if B == B_MAX
 	} //end loop over i
-	arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
+	/*arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);*/
 	//expand geno_s_field into a n by ms matrix
 	
 	//armadillo save the matrix
 	//Sigma_ss_matrix.save("Sigma_ss.dat");
-	return 0;
+	return result;
 }
 
 

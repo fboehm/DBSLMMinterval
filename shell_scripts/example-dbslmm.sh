@@ -1,7 +1,8 @@
 ### change file permission for dbslmm
-DIR=~/tmp/DBSLMM
-#dbslmm=../bin/dbslmminterval
-dbslmm=${DIR}/scr/dbslmm
+#DIR=~/tmp/DBSLMM
+DIR=~/research/DBSLMM
+dbslmm=../bin/dbslmminterval
+#dbslmm=${DIR}/scr/dbslmm
 ### Parameters for DBSLMM
 let chr=1
 DBSLMM=${DIR}/software/DBSLMM.R
@@ -16,8 +17,12 @@ h2=0.5
 nobs=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $5}'`
 nmis=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $4}'`
 n=$(echo "${nobs}+${nmis}" | bc -l)
+outfile="armafield-example-Chr${chr}.dat"
 ## execute Rscript
-Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} --plink ${plink} --dbslmm ${dbslmm} --ref ${ref}${chr} --n ${n} --nsnp ${m} --type auto --model DBSLMM --block ${blockf}${chr}.bed --h2 ${h2} 
+Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
+  --plink ${plink} --dbslmm ${dbslmm} --ref ${ref}${chr} --n ${n} \
+  --nsnp ${m} --type auto --model DBSLMM --block ${blockf}${chr}.bed \
+  --h2 ${h2} --outfile ${outfile} 
 ### Predict
 bfilete=${DIR}/test_dat/test_chr
 est=${DIR}/test_dat/out/summary_gemma_chr

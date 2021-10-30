@@ -21,12 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <ctime>
 #include <math.h>
+#include <armadillo>
 
 #include "../include/dtpr.hpp"
 #include "../include/dbslmmfit.hpp"
 #include "../include/dbslmm.hpp"
 
 using namespace std;
+using namespace arma;
 
 DBSLMM::DBSLMM(void) :
 	version("0.3"), date("05/01/2021"), year("2021")
@@ -291,7 +293,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
     double t_fitting = cIO.getWalltime();
     double sigma_s = cPar.h / (double)cPar.nsnp; // this tells us that sigma_s *is* $\hat\sigma_s^2$!
     cout << "Fitting model..." << endl;
-    cDBSF.est(n_ref, 
+    arma::field < arma::mat> out = cDBSF.est(n_ref, 
               cPar.n, 
               sigma_s, 
               num_block_s, //
@@ -302,6 +304,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
               cPar.t, 
               eff_s, 
               eff_l); 
+    out.save(cPar.outfile);
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
     
@@ -328,7 +331,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
     double t_fitting = cIO.getWalltime();
     double sigma_s = cPar.h / (double)cPar.nsnp;
     cout << "Fitting model..." << endl;
-    cDBSF.est(n_ref, 
+    arma::field < arma::mat> out = cDBSF.est(n_ref, 
               cPar.n, 
               sigma_s, 
               num_block_s, 
