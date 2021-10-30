@@ -10,7 +10,7 @@ summf=${DIR}/test_dat/summary_gemma_chr
 outPath=${DIR}/test_dat/out/
 plink=/usr/cluster/bin/plink-1.9
 ref=${DIR}/test_dat/ref_chr
-outfile=${outPath}armafield-example-Chr${chr}.dat
+outfile=armafield-example-Chr${chr}.dat
 
 blockf=${DIR}/block_data/EUR/chr
 m=`cat ${summf}${chr}.assoc.txt | wc -l` 
