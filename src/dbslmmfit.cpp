@@ -48,7 +48,7 @@ using namespace arma;
 //' @param eff_l large effects SNP effects object
 //' @return zero is returned
 // estimate large and small effect
-auto DBSLMMFIT::est(int n_ref,
+arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
                    int n_obs, 
                    double sigma_s, 
                    int num_block, //is this the number of markers in a single block? Or the number of blocks in the genome?
@@ -223,7 +223,7 @@ auto DBSLMMFIT::est(int n_ref,
 }//end function
 
 // estimate only small effect
-int DBSLMMFIT::est(int n_ref,
+arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
                    int n_obs, 
                    double sigma_s, 
                    int num_block, 
