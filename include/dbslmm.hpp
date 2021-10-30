@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class PARAM {
 public:
   //parameters
+  string outfile;
   string s; 
   string l;
   string r;
@@ -38,7 +39,6 @@ public:
   double h;
   int t;
   string eff;
-  string outfile;
 };
 
 class DBSLMM {
