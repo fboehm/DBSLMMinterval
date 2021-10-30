@@ -10,7 +10,7 @@ summf=${DIR}/test_dat/summary_gemma_chr
 outPath=${DIR}/test_dat/out/
 plink=/usr/cluster/bin/plink-1.9
 ref=${DIR}/test_dat/ref_chr
-outfile=armafield-Chr${chr}.dat
+outfile=armafieldChr${chr}.dat
 
 blockf=${DIR}/block_data/EUR/chr
 m=`cat ${summf}${chr}.assoc.txt | wc -l` 
@@ -20,9 +20,9 @@ nmis=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $4}'`
 n=$(echo "${nobs}+${nmis}" | bc -l)
 ## execute Rscript
 Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
-  --plink ${plink} --dbslmm ${dbslmm} --ref ${ref}${chr} --n ${n} \
+  --plink ${plink} --dbslmm ${dbslmm} --outfile ${outfile} --ref ${ref}${chr} --n ${n} \
   --nsnp ${m} --type auto --model DBSLMM --block ${blockf}${chr}.bed \
-  --h2 ${h2} --outfile ${outfile} 
+  --h2 ${h2}  
 ### Predict
 bfilete=${DIR}/test_dat/test_chr
 est=${DIR}/test_dat/out/summary_gemma_chr
