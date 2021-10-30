@@ -305,7 +305,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
               eff_s, 
               eff_l); 
     //out.save(cPar.outfile, arma::arma_binary);
-    out.save("foo.dat", arma::arma_binary);
+    out.save("foo.dat", arma::arma_binary);//need to rename in bash file
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
     
