@@ -8,12 +8,12 @@
 using namespace arma;
 using namespace std;
 
-//! Fisher-Yates shuffle algorithm for a permutation of integers
+//! \brief Fisher-Yates shuffle algorithm for a permutation of integers
 //! 
-//! @param size number of samples to draw
-//! @param max_size number of possible objects
-//! @param gen for pseudorandomness
-//! @references https://ideone.com/KvvCda
+//! \param size number of samples to draw
+//! \param max_size number of possible objects
+//! \param gen for pseudorandomness
+//! \references https://ideone.com/KvvCda
 
 std::vector<int> fisher_yates_shuffle(std::size_t size, 
                                       std::size_t max_size, 
@@ -39,10 +39,10 @@ std::vector<int> fisher_yates_shuffle(std::size_t size,
 
 //! (Pseudo-)Randomly sample indices, eg., to determine test set membership
 //! 
-//! @param n_obs total number of subjects (test plus training)
-//! @param test_proportion proportion of subjects to place in test set
-//! @param seed a positive integer seed for the pseudo-RNG
-//! @return  integers to indicate test set membership
+//! \param n_obs total number of subjects (test plus training)
+//! \param test_proportion proportion of subjects to place in test set
+//! \param seed a positive integer seed for the pseudo-RNG
+//! \return  integers to indicate test set membership
 
 arma::Col<arma::uword> get_test_indices(int n_obs, 
                                         double test_proportion, 
@@ -61,9 +61,9 @@ arma::Col<arma::uword> get_test_indices(int n_obs,
 
 //! Subset a matrix's rows by indices 
 //! 
-//! @param mat a matrix, eg., of genotypes, for the entire cohort, with one subject per row
-//! @param test_indices vector with subject indices to go into test set
-//! @return matrix of genotypes for the subsetted collection of subjects
+//! \param mat a matrix, eg., of genotypes, for the entire cohort, with one subject per row
+//! \param test_indices vector with subject indices to go into test set
+//! \return matrix of genotypes for the subsetted collection of subjects
 
 arma::mat subset(arma::mat matrix, arma::Col<arma::uword> indices){
   arma::mat result = matrix.rows(indices);
@@ -72,9 +72,9 @@ arma::mat subset(arma::mat matrix, arma::Col<arma::uword> indices){
 
 //! Subset a vector by indices
 //! 
-//! @param vector a vector, arma::vec
-//! @param indices arma::vec of indices to indicate which entries to extract 
-//! @return vector of values for the subsetted collection of subjects
+//! \param vector a vector, arma::vec
+//! \param indices arma::vec of indices to indicate which entries to extract 
+//! \return vector of values for the subsetted collection of subjects
 
 arma::vec subset(arma::vec vector, arma::Col<arma::uword> indices){
   arma::vec result = vector.elem(indices);
@@ -83,9 +83,9 @@ arma::vec subset(arma::vec vector, arma::Col<arma::uword> indices){
 
 //! Construct an integer vector from start to end, for integers start and end
 //! 
-//! @param start smallest and first integer value
-//! @param end largest and last integer value
-//! @return integer vector, start, start + 1, ..., end
+//! \param start smallest and first integer value
+//! \param end largest and last integer value
+//! \return integer vector, start, start + 1, ..., end
 
 std::vector<int> make_integer_vector(int start, int end){
   std::vector<int> myVec;
@@ -96,9 +96,9 @@ std::vector<int> make_integer_vector(int start, int end){
 
 //! Get complementary indices for, eg, test data or training data
 //! 
-//! @param test_indices indices for subjects to be placed into test data set
-//! @param sample_size total combined sample size, training and test together
-//! @return integer vector containing the complement of test_indices to indicate membership in training data set
+//! \param test_indices indices for subjects to be placed into test data set
+//! \param sample_size total combined sample size, training and test together
+//! \return integer vector containing the complement of test_indices to indicate membership in training data set
 
 arma::Col<arma::uword> get_training_indices(arma::Col<arma::uword> test_indices, int sample_size){
   //convert to std::vector
