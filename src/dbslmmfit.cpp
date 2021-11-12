@@ -175,7 +175,7 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
 			  );
 			  int index = floor(i / B_MAX) * B_MAX + b;
 			  //transfer 'out' into the 5 entries
-			  result(index, 0) = out(0);// is this the correct index value?? What about for a whole genome???
+			  result(index, 0) = out(0);// is this the correct index value??
 			  result(index, 1) = out(1);
 			  result(index, 2) = out(2);
         result(index, 3) = out(3);
