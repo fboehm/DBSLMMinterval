@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class PARAM {
 public:
   //parameters
-  string outfile;
+  string outfile;//fred's new parameter
   string s; 
   string l;
   string r;
