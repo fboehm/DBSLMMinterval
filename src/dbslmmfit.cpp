@@ -451,7 +451,7 @@ arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref,
        geno_s, 
        z_s, 
        beta_s);
-	  out(0) = foo(1);
+	  out(0) = foo(0);
 	  out(3) = geno_s;
 	  }
 	else {
