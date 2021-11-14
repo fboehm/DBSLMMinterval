@@ -44,7 +44,6 @@ int main(int argc, char * argv[])
   
   cDB.Assign(argc, argv, cPar);
   
-  cout<< "From main, cPar.outfile is: " << cPar.outfile << endl; 
   cDB.BatchRun(cPar);
   return EXIT_SUCCESS;
 }
