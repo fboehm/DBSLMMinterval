@@ -159,7 +159,6 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
       
     }
   }
-  cout << "from Assign: " << cPar.outfile << endl; 
   return;
 }
 
