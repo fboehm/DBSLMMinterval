@@ -39,11 +39,19 @@ int main(int argc, char * argv[])
     cDB.printHelp();
     return EXIT_SUCCESS;
   }
-  for (int i = 0; i < argc; ++i)
+  /*for (int i = 0; i < argc; ++i)
     cout << argv[i] << "\n";
+  */
+  //cDB.Assign(argc, argv, cPar);
+  //read param settings file here!
   
-  cDB.Assign(argc, argv, cPar);
-  
-  cDB.BatchRun(cPar);
+  for (int i = 0; i < 22; ++i){
+    //create cPar object here:
+    
+    
+    // call BatchRun
+    cDB.BatchRun(cPar);
+    
+  }
   return EXIT_SUCCESS;
 }
