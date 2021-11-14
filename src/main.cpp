@@ -55,5 +55,8 @@ int main(int argc, char * argv[])
     cDB.BatchRun(cPar);
     
   }
+  //var calcs here!
+  
+  
   return EXIT_SUCCESS;
 }
