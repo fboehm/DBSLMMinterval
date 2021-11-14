@@ -46,7 +46,7 @@ using namespace arma;
 //' @param thread number of threads to use
 //' @param eff_s small effects SNP effects object
 //' @param eff_l large effects SNP effects object
-//' @return zero is returned
+//' @return a two-dimensional field with 1 "row" per block on the chromosome and 5 "columns" 
 // estimate large and small effect
 arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
                    int n_obs, 
@@ -175,7 +175,7 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
 			  );
 			  int index = floor(i / B_MAX) * B_MAX + b;
 			  //transfer 'out' into the 5 entries
-			  result(index, 0) = out(0);// is this the correct index value??
+			  result(index, 0) = out(0);// is this the correct index value?? YES!
 			  result(index, 1) = out(1);
 			  result(index, 2) = out(2);
         result(index, 3) = out(3);
@@ -196,29 +196,6 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
 			B = 0;// reset B to zero
 			num_l_vec.clear(); 
 			num_s_vec.clear();
-		}//end if statement starting on line: if (B == B_MAX...
-	}//end loop for i
-	/*arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);
-	//armadillo save the matrix
-	//Sigma_ss_matrix.save("Sigma_ss.dat");
-	arma::mat Sigma_sl_matrix = BlockDiag(Sigma_sl);
-	//armadillo save the matrix
-	//Sigma_ss_matrix.save("Sigma_sl.dat");
-	arma::mat Sigma_ll_matrix = BlockDiag(Sigma_ll);
-	//armadillo save the matrix
-	//Sigma_ss_matrix.save("Sigma_ll.dat");
-	//expand geno_s_field and geno_l_field into n by ms/ml matrices
-	arma::mat geno_s_matrix = ConcatenateColumns(geno_s_field);
-	arma::mat geno_l_matrix = ConcatenateColumns(geno_l_field);
-	arma::mat vv = calc_asymptotic_variance(Sigma_ll_matrix, 
-                          arma::trans(Sigma_sl_matrix), 
-                           Sigma_ss_matrix, 
-                          sigma_s, 
-                          n_obs,
-                          geno_l_matrix, 
-                          geno_s_matrix);
-	arma::vec vdiag = vv.diag();
-  vdiag.save("vdiag.csv", csv_ascii);*/
 	return result;
 }//end function
 
@@ -317,11 +294,6 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
 			num_s_vec.clear();
 		} // end if B == B_MAX
 	} //end loop over i
-	/*arma::mat Sigma_ss_matrix = BlockDiag(Sigma_ss);*/
-	//expand geno_s_field into a n by ms matrix
-	
-	//armadillo save the matrix
-	//Sigma_ss_matrix.save("Sigma_ss.dat");
 	return result;
 }
 
@@ -340,7 +312,7 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
 //' @param num_l_block
 //' @param eff_s_block effects object for small effects per block? 
 //' @param eff_l_block effects object for large effects per block?
-//' @return a armadillo field containing arma::mat objects: 1: Sigma_ss, 2: Sigma_sl, 3: Sigma_ll, 4: geno_s, 5:geno_l
+//' @return a armadillo field containing arma::mat objects: 0: Sigma_ss, 1: Sigma_sl, 2: Sigma_ll, 3: geno_s, 4:geno_l
 // estimate large and small effect for each block
 arma::field<arma::mat> DBSLMMFIT::calcBlock(int n_ref, 
                                             int n_obs, 
