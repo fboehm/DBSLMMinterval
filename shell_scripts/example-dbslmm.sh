@@ -4,7 +4,9 @@ DIR=~/research/DBSLMM
 dbslmm=../bin/dbslmminterval
 #dbslmm=${DIR}/scr/dbslmm
 ### Parameters for DBSLMM
-let chr=1
+#let chr=1
+for chr in seq `1 22` 
+do 
 DBSLMM=${DIR}/software/DBSLMM.R
 summf=${DIR}/test_dat/summary_gemma_chr
 outPath=${DIR}/test_dat/out/
@@ -34,3 +36,4 @@ ${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 sum --ou
 plink=plink2
 ${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 cols=+scoresums --out ${InterPred}${chr}
 
+done
