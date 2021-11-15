@@ -70,6 +70,7 @@ int main(int argc, char * argv[])
   }
   //var calcs here! use contents of results field of field of matrices
   //1. assemble genome-wide matrices from "results"
+  // results is a 22-long field where each entry is itself a 2d field containing matrices
   
   //2. input matrices to calc_asymptotic_variance
   
