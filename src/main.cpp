@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
   */
   //cDB.Assign(argc, argv, cPar);
   //read param settings file here!
-  
+  std::vector<std::vector<std::string>> control = readControlFile(cPar.control_file);
   //initialize a field to store outputs for var calcs!
   
   for (int i = 0; i < 22; ++i){
