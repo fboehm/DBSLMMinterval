@@ -158,11 +158,18 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
       cPar.outfile = str;
       
     }
+    else if (strcmp(argv[i], "--control_file") == 0 || strcmp(argv[i], "-control_file") == 0){
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.control_file = str;
+    }
   }
   return;
 }
 
-void DBSLMM::BatchRun(PARAM &cPar) {
+arma::field < arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
   
   SNPPROC cSP; //declare objects, prefixed with "c"
   IO cIO;
@@ -313,8 +320,9 @@ void DBSLMM::BatchRun(PARAM &cPar) {
               cPar.t, 
               eff_s, 
               eff_l); 
-    cout << "This is outfile: " << cPar.outfile << endl;
+    /*cout << "This is outfile: " << cPar.outfile << endl;
     out.save(cPar.outfile, arma::arma_binary);
+    */
     //out.save("foo.dat", arma::arma_binary);//need to rename in bash file
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
@@ -352,7 +360,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
               cPar.t, 
               eff_s
     ); //call est for small effects only!
-    out.save(cPar.outfile, arma::arma_binary);//need to rename in bash file
+    //out.save(cPar.outfile, arma::arma_binary);//need to rename in bash file
     
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
@@ -364,5 +372,5 @@ void DBSLMM::BatchRun(PARAM &cPar) {
         effFout << eff_s[i].snp << " " << eff_s[i].a1 << " " << eff_s[i].beta << " " << beta_s_noscl << " " << 0 << endl; 
     }
   }
-  return;
+  return out;
 }

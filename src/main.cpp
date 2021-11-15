@@ -18,13 +18,15 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
+#include <armadillo>
 #include <sys/stat.h>
 #include <sys/types.h>
 
 #include "../include/dbslmm.hpp"
+#include "../include/read_control.h"
 
 using namespace std;
+using namespace arma;
 
 int main(int argc, char * argv[])
 {
@@ -42,20 +44,37 @@ int main(int argc, char * argv[])
   /*for (int i = 0; i < argc; ++i)
     cout << argv[i] << "\n";
   */
-  //cDB.Assign(argc, argv, cPar);
+  cDB.Assign(argc, argv, cPar);
   //read param settings file here!
   std::vector<std::vector<std::string>> control = readControlFile(cPar.control_file);
-  //initialize a field to store outputs for var calcs!
-  
-  for (int i = 0; i < 22; ++i){
+  cout << "control length is: " << control.size() << endl;
+  //initialize a arma::field to store outputs for var calcs!
+  arma::field < arma::field < arma::mat> > results; 
+  for (int i = 0; i < control.size(); ++i){
+    std::vector < std::string> rr = control[i];
     //create cPar object here:
-    
+    cPar.b = rr[1];// chr is column 0; then do the other args in alphabetical order
+    cPar.eff = rr[2];
+    cPar.h = std::stod(rr[3]);
+    cPar.l = rr[4];
+    cPar.mafMax = std::stod(rr[5]);//https://www.programiz.com/cpp-programming/string-float-conversion
+    cPar.n = std::stoi(rr[6]);
+    cPar.nsnp = std::stoi(rr[7]);
+    cPar.r = rr[8];
+    cPar.s = rr[9];
+    cPar.t = std::stoi(rr[10]);
     
     // call BatchRun
-    cDB.BatchRun(cPar);
+    results(i) = cDB.BatchRun(cPar);
     
   }
-  //var calcs here!
+  //var calcs here! use contents of results field of field of matrices
+  //1. assemble genome-wide matrices from "results"
+  
+  //2. input matrices to calc_asymptotic_variance
+  
+  //3. write diagonal of var to a csv file
+  
   
   
   return EXIT_SUCCESS;
