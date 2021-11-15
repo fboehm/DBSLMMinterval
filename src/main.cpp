@@ -63,12 +63,11 @@ int main(int argc, char * argv[])
     cPar.r = rr[8];
     cPar.s = rr[9];
     cPar.t = std::stoi(rr[10]);
-    
+    double sigma2_s = cPar.h / (double)cPar.nsnp;
     // call BatchRun
     results(i) = cDB.BatchRun(cPar);
-    
   }
-  //var calcs here! use contents of results field of field of matrices
+  //var calcs here! use contents of results field of 2d field of matrices
   //1. assemble genome-wide matrices from "results"
   // results is a 22-long field where each entry is itself a 2d field containing matrices
   
