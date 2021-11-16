@@ -16,15 +16,35 @@ outfile=armafieldChr${chr}.dat
 
 blockf=${DIR}/block_data/EUR/chr
 m=`cat ${summf}${chr}.assoc.txt | wc -l` 
-#h2=0.5
+h2=0.5 # need to replace with input from 
 nobs=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $5}'`
 nmis=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $4}'`
 n=$(echo "${nobs}+${nmis}" | bc -l)
+# write a row to control file
+declare -A my_array # -A means associative array: https://linuxconfig.org/how-to-use-arrays-in-bash-script
+my_array+=([chr] = ${chr} [block] = ${blockf}${chr}.bed [n]=${n} [nsnp]=${m} \
+    [outfile] = ${outfile} [model] = DBSLMM [type] = auto [ref] = ${ref}${chr} [dbslmm] = ${dbslmm} \
+    [h2] = ${h2} [summary] = ${summf}${chr}.assoc.txt [outpath] = ${outPath})
+join_arr() {
+  local IFS="$1"
+  shift
+  echo "$*"
+}
+
+join_arr , "${my_array[@]}" >> control.csv # https://linuxize.com/post/bash-append-to-file/
+done
+
 ## execute Rscript
 Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
   --plink ${plink} --dbslmm ${dbslmm} --outfile ${outfile} --ref ${ref}${chr} --n ${n} \
   --nsnp ${m} --type auto --model DBSLMM --block ${blockf}${chr}.bed \
-  --h2 ${h2}  
+  --h2 ${h2}
+  
+  
+  
+for chr in seq `1 22` 
+do 
+  
 ### Predict
 bfilete=${DIR}/test_dat/test_chr
 est=${DIR}/test_dat/out/summary_gemma_chr
