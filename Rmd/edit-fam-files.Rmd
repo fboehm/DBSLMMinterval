@@ -1,0 +1,48 @@
+---
+title: "Add extra phenotype columns to fam files for input to GEMMA"
+author: "Frederick Boehm"
+date: "11/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goals
+
+The goal here is to read an existing UKB fam file into R. Once this is done, we'll
+use subsetting to create two "new" phenotype columns. Finally, we write the result
+to a new fam file.
+
+## Read fam file
+
+```{r}
+fam <- genio::read_fam("~/research/ukb-intervals/dat/plink_files/ukb/chr1.fam")
+(n <- nrow(fam))
+```
+
+## sample test set
+
+```{r}
+set.seed(2021-11-17)
+test_id <- sample(x = n, size = floor(n / 5), replace = FALSE)
+train_id <- setdiff(x = 1:n, y = test_id)
+```
+
+
+## Create new traits with missing values as needed
+
+```{r}
+fam$train <- NA
+fam$test <- NA
+fam$train[train_id] <- fam$pheno[train_id]
+fam$test[test_id] <- fam$pheno[test_id]
+```
+
+## Write new fam file
+
+```{r}
+genio::write_fam("~/research/ukb-intervals/dat/plink_files/ukb/modified_fam/chr1.fam")
+```
+
