@@ -4,9 +4,10 @@ DIR=~/research/DBSLMM
 dbslmm=../bin/dbslmminterval
 #dbslmm=${DIR}/scr/dbslmm
 ### Parameters for DBSLMM
-#let chr=1
-for chr in seq `1 22` 
-do 
+let chr=1
+#for chr in $(seq 1 22)
+#do 
+echo ${chr}
 DBSLMM=${DIR}/software/DBSLMM.R
 summf=${DIR}/test_dat/summary_gemma_chr
 outPath=${DIR}/test_dat/out/
@@ -16,23 +17,25 @@ outfile=armafieldChr${chr}.dat
 
 blockf=${DIR}/block_data/EUR/chr
 m=`cat ${summf}${chr}.assoc.txt | wc -l` 
-h2=0.5 # need to replace with input from 
+h2=0.5 # need to replace with input from ldscore output
 nobs=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $5}'`
 nmis=`sed -n "2p" ${summf}${chr}.assoc.txt | awk '{print $4}'`
 n=$(echo "${nobs}+${nmis}" | bc -l)
 # write a row to control file
-declare -A my_array # -A means associative array: https://linuxconfig.org/how-to-use-arrays-in-bash-script
-my_array+=([chr] = ${chr} [block] = ${blockf}${chr}.bed [n]=${n} [nsnp]=${m} \
-    [outfile] = ${outfile} [model] = DBSLMM [type] = auto [ref] = ${ref}${chr} [dbslmm] = ${dbslmm} \
-    [h2] = ${h2} [summary] = ${summf}${chr}.assoc.txt [outpath] = ${outPath})
+#declare -A my_array # -A means associative array: https://linuxconfig.org/how-to-use-arrays-in-bash-script
+declare -a my_array2
+#my_array=([chr] = "${chr}" [block] = ${blockf}${chr}.bed [n]=${n} [nsnp]=${m} \
+#    [outfile] = ${outfile} [model] = DBSLMM [type] = auto [ref] = ${ref}${chr} [dbslmm] = ${dbslmm} \
+#    [h2] = ${h2} [summary] = ${summf}${chr}.assoc.txt [outpath] = ${outPath})
+my_array2=(${chr} ${blockf}${chr}.bed ${n} ${m} ${outfile} DBSLMM auto ${ref}${chr} ${dbslmm} ${h2} ${summf}${chr}.assoc.txt ${outPath})
 join_arr() {
   local IFS="$1"
   shift
   echo "$*"
 }
 
-join_arr , "${my_array[@]}" >> control.csv # https://linuxize.com/post/bash-append-to-file/
-done
+join_arr , "${my_array2[@]}" >> control.csv # https://linuxize.com/post/bash-append-to-file/
+#done
 
 ## execute Rscript
 Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
