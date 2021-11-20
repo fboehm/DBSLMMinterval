@@ -57,16 +57,18 @@ int main(int argc, char * argv[])
   for (int i = 0; i < 2 * nchr; ++i){
     std::vector < std::string> rr = control[i];
     //create cPar object here: COORDINATE WITH CONTROL FILE STRUCTURE
+    // 
     cPar.b = rr[1];// chr is column 0; then do the other args in alphabetical order
-    cPar.eff = rr[2];
-    cPar.h = std::stod(rr[3]);
-    cPar.l = rr[4];
+    // b is the path to the block data files directory
+    cPar.eff = rr[2]; //file path for outputting the snp effect estimates
+    cPar.h = std::stod(rr[3]); //heritability
+    cPar.l = rr[4]; //large effects summary file path
     cPar.mafMax = std::stod(rr[5]);//https://www.programiz.com/cpp-programming/string-float-conversion
-    cPar.n = std::stoi(rr[6]);
-    cPar.nsnp = std::stoi(rr[7]);
-    cPar.r = rr[8];
-    cPar.s = rr[9];
-    cPar.t = std::stoi(rr[10]);
+    cPar.n = std::stoi(rr[6]); //sample size
+    cPar.nsnp = std::stoi(rr[7]); //number of snps (genomewide)
+    cPar.r = rr[8]; // bfile for reference data 
+    cPar.s = rr[9]; //small effects summary file path
+    cPar.t = std::stoi(rr[10]); //number of threads
     double sigma2_s = cPar.h / (double)cPar.nsnp;
     // call BatchRun
     ff = cDB.BatchRun(cPar);
