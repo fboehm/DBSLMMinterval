@@ -27,7 +27,29 @@ declare -a my_array2
 #my_array=([chr] = "${chr}" [block] = ${blockf}${chr}.bed [n]=${n} [nsnp]=${m} \
 #    [outfile] = ${outfile} [model] = DBSLMM [type] = auto [ref] = ${ref}${chr} [dbslmm] = ${dbslmm} \
 #    [h2] = ${h2} [summary] = ${summf}${chr}.assoc.txt [outpath] = ${outPath})
-my_array2=(${chr} ${blockf}${chr}.bed ${n} ${m} ${outfile} DBSLMM auto ${ref}${chr} ${dbslmm} ${h2} ${summf}${chr}.assoc.txt ${outPath})
+my_array2=(${chr} \
+            # b 
+            ${blockf}${chr}.bed \
+            # eff 
+            ${outPath}${chr}.dbslmm \
+            # heritability
+            ${h2} \
+            # l, large effects summary file path
+            ${outPath}${chr}l.txt \
+            # mafmax default 0.2
+            0.2 \
+            # n sample size
+            ${n} \
+            # nsnp
+            ${m} \
+            # r, bfile for ref data
+            ${DIR}/test_dat/ref_chr${chr} \
+            # s small effects summary data
+            ${outPath}${chr}s.txt \
+            # type
+            auto 
+            # 
+)
 join_arr() {
   local IFS="$1"
   shift
