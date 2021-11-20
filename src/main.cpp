@@ -48,11 +48,15 @@ int main(int argc, char * argv[])
   //read param settings file here!
   std::vector<std::vector<std::string>> control = readControlFile(cPar.control_file);
   cout << "control length is: " << control.size() << endl;
+  int nchr = control.size() / 2; // nchr is number of chromosomes in genome
+  //control file always has a number of lines equal to twice the number of chromosomes
   //initialize a arma::field to store outputs for var calcs!
-  arma::field < arma::field < arma::mat> > results; 
-  for (int i = 0; i < control.size(); ++i){
+  arma::field <arma::mat > ff;
+  arma::field < arma::mat> training(nchr, 5);
+  arma::field < arma::mat> test(nchr, 5);
+  for (int i = 0; i < 2 * nchr; ++i){
     std::vector < std::string> rr = control[i];
-    //create cPar object here:
+    //create cPar object here: COORDINATE WITH CONTROL FILE STRUCTURE
     cPar.b = rr[1];// chr is column 0; then do the other args in alphabetical order
     cPar.eff = rr[2];
     cPar.h = std::stod(rr[3]);
@@ -65,16 +69,24 @@ int main(int argc, char * argv[])
     cPar.t = std::stoi(rr[10]);
     double sigma2_s = cPar.h / (double)cPar.nsnp;
     // call BatchRun
-    results(i) = cDB.BatchRun(cPar);
+    ff = cDB.BatchRun(cPar);
+    if (i < nchr){
+      training.row(i) = assembleMatrices(ff);
+    } else {
+      test.row(i - nchr) = assembleMatrices(ff);
+    }
   }
-  //var calcs here! use contents of results field of 2d field of matrices
+  //var calcs here! 
   //1. assemble genome-wide matrices from "results"
-  // results is a 22-long field where each entry is itself a 2d field containing matrices
-  
-  //2. input matrices to calc_asymptotic_variance
-  
+  // results is a 22-long field where each entry is itself a 1d field containing 5 matrices
+  arma::field < arma::mat > mats_training = assembleMatrices(training);
+  arma::field < arma::mat > mats_test = assembleMatrices(test);
+    //2. input matrices to calc_asymptotic_variance
+  arma::mat vv = calc_asymptotic_variance(mats_training(2), t(mats_training(1)), mats_training(0), 
+                                          cPar.h, cPar.n, mats_test(4), mats_test(3));
   //3. write diagonal of var to a csv file
-  
+  arma::vec vd = diagvec(vv);
+  vd.save("out.csv", csv_ascii);
   
   
   return EXIT_SUCCESS;

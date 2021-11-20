@@ -183,3 +183,20 @@ arma::mat ConcatenateColumns( arma::field<arma::mat> x ) {
   }
   return(X);
 }
+
+//' Assemble one set of five matrices for one chromosome
+//' 
+//' @details Input is an two-dimensional arma::field, where each cell contains an arma::mat
+//'     Specifically, it is a k by 5 arma::field, where k is the number of blocks on the chromosome of interest.
+//' @param field
+//' @return a one-dimensional field containing exactly five arma::mat matrices: Sigma_ss, Sigma_sl, Sigma_ll, geno_s, geno_l    
+
+arma::field <arma::mat> assembleMatrices(arma::field < arma::mat> field){
+  arma::field <arma::mat> result(5);
+  arma::mat result(0) = BlockDiag(field.col(0));
+  arma::mat result(1) = BlockDiag(field.col(1));
+  arma::mat result(2) = BlockDiag(field.col(2));
+  arma::mat result(3) = ConcatenateColumns(field.col(3));
+  arma::mat result(4) = ConcatenateColumns(field.col(4));
+  return result;
+} 

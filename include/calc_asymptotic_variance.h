@@ -32,3 +32,6 @@ arma::mat calc_A_inverse(arma::mat Sigma_ss,
 arma::mat BlockDiag( arma::field<arma::mat> x );
 
 arma::mat ConcatenateColumns( arma::field<arma::mat> x );
+
+
+arma::field <arma::mat> assembleMatrices(arma::field < arma::mat> field);
