@@ -15,8 +15,12 @@ CXX = g++
 # Set complier flags 
 CXXFLAG = -static -fopenmp -O3 -std=c++11 -lm -llapacke -llapack -lblas -Wall
 all: $(OUTPUTD)
-$(OUTPUTD): src/main.o src/dtpr.o src/dbslmm.o src/dbslmmfit.o src/calc_asymptotic_variance.o src/subset_to_test_and_training.o
-	$(CXX) src/main.o src/dtpr.o src/dbslmm.o src/dbslmmfit.o src/calc_asymptotic_variance.o src/subset_to_test_and_training.o -o $(OUTPUTD) $(CXXFLAG) -L $(ARMALIB)
+$(OUTPUTD): src/main.o src/dtpr.o src/dbslmm.o src/dbslmmfit.o src/read_control.o src/calc_asymptotic_variance.o src/subset_to_test_and_training.o
+	$(CXX) src/main.o src/dtpr.o src/dbslmm.o src/dbslmmfit.o \
+	src/calc_asymptotic_variance.o \
+	src/subset_to_test_and_training.o \
+	src/read_control.o \
+	-o $(OUTPUTD) $(CXXFLAG) -L $(ARMALIB)
 src/main.o: src/main.cpp
 	$(CXX) -c src/main.cpp -o src/main.o
 src/dbslmm.o: src/dbslmm.cpp include/dbslmm.hpp
@@ -30,7 +34,8 @@ src/calc_asymptotic_variance.o: src/calc_asymptotic_variance.cpp include/calc_as
 	$(CXX) -c src/calc_asymptotic_variance.cpp -o src/calc_asymptotic_variance.o $(CXXFLAG)
 src/subset_to_test_and_training.o: src/subset_to_test_and_training.cpp include/subset_to_test_and_training.h 
 	$(CXX) -c src/subset_to_test_and_training.cpp -o src/subset_to_test_and_training.o $(CXXFLAG)
-
+src/read_control.o: src/read_control.cpp include/read_control.h
+	$(CXX) -c src/read_control.cpp -o src/read_control.o $(CXXFLAG)
 
 
 clean:
