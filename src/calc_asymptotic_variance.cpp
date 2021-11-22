@@ -193,10 +193,10 @@ arma::mat ConcatenateColumns( arma::field<arma::mat> x ) {
 
 arma::field <arma::mat> assembleMatrices(arma::field < arma::mat> field){
   arma::field <arma::mat> result(5);
-  arma::mat result(0) = BlockDiag(field.col(0));
-  arma::mat result(1) = BlockDiag(field.col(1));
-  arma::mat result(2) = BlockDiag(field.col(2));
-  arma::mat result(3) = ConcatenateColumns(field.col(3));
-  arma::mat result(4) = ConcatenateColumns(field.col(4));
+  result(0) = BlockDiag(field.col(0));
+  result(1) = BlockDiag(field.col(1));
+  result(2) = BlockDiag(field.col(2));
+  result(3) = ConcatenateColumns(field.col(3));
+  result(4) = ConcatenateColumns(field.col(4));
   return result;
 } 
