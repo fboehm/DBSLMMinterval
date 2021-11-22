@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+#include "../include/read_control.h"
+
+
 enum class CSVState {
   UnquotedField,
   QuotedField,
