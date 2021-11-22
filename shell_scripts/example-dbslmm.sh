@@ -2,6 +2,7 @@
 #DIR=~/tmp/DBSLMM
 DIR=~/research/DBSLMM
 dbslmm=../bin/dbslmminterval
+control_file=control.csv
 #dbslmm=${DIR}/scr/dbslmm
 ### Parameters for DBSLMM
 let chr=1
@@ -47,8 +48,9 @@ my_array2=(${chr} \
             # s small effects summary data
             ${outPath}${chr}s.txt \
             # type
-            auto 
-            # 
+            auto \
+            # control file file path
+            ${control_file}
 )
 join_arr() {
   local IFS="$1"
@@ -56,14 +58,14 @@ join_arr() {
   echo "$*"
 }
 
-join_arr , "${my_array2[@]}" >> control.csv # https://linuxize.com/post/bash-append-to-file/
+join_arr , "${my_array2[@]}" >> ${control_file} # https://linuxize.com/post/bash-append-to-file/
 #done
 
 ## execute Rscript
 Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
   --plink ${plink} --dbslmm ${dbslmm} --outfile ${outfile} --ref ${ref}${chr} --n ${n} \
   --nsnp ${m} --type auto --model DBSLMM --block ${blockf}${chr}.bed \
-  --control ~/research/DBSLMMinterval/shell_scripts/control.csv
+  --control ${control_file}  
   
   
   
