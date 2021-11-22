@@ -63,7 +63,7 @@ args_list <- list(
 
 opt_parser <- OptionParser(option_list=args_list)
 opt <- parse_args(opt_parser)
-
+print(opt)
 # output the options
 # cat("Acccept Options: \n")
 # cat("--summary:  ", opt$summary, "\n")
