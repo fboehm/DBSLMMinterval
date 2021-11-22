@@ -5,7 +5,7 @@ dbslmm=../bin/dbslmminterval
 #dbslmm=${DIR}/scr/dbslmm
 ### Parameters for DBSLMM
 let chr=1
-#for chr in $(seq 1 22)
+### for chr in $(seq 1 22)
 #do 
 echo ${chr}
 DBSLMM=${DIR}/software/DBSLMM.R
@@ -67,8 +67,8 @@ Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
   
   
   
-for chr in seq `1 22` 
-do 
+#for chr in seq `1 22` 
+#do 
   
 ### Predict
 bfilete=${DIR}/test_dat/test_chr
@@ -81,4 +81,4 @@ ${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 sum --ou
 plink=plink2
 ${plink} --bfile ${bfilete}${chr} --score ${est}${chr}.dbslmm.txt 1 2 4 cols=+scoresums --out ${InterPred}${chr}
 
-done
+#done
