@@ -196,6 +196,8 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
 			B = 0;// reset B to zero
 			num_l_vec.clear(); 
 			num_s_vec.clear();
+		}
+	}
 	return result;
 }//end function
 
