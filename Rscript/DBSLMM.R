@@ -200,6 +200,7 @@ if (opt$model == "DBSLMM"){
     ## dbslmm
     if(opt$type == "auto"){
       system(paste0(opt$dbslmm,
+                    " -control ", opt$control,
                     
                     " -outfile ", opt$outfile,          
                     " -s ",      opt$outPath, "s_", prefix_file, ".txt",
