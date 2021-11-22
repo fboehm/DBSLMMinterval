@@ -24,6 +24,7 @@
 
 #include "../include/dbslmm.hpp"
 #include "../include/read_control.h"
+#include "../include/calc_asymptotic_variance.h"
 
 using namespace std;
 using namespace arma;
