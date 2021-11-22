@@ -63,7 +63,7 @@ join_arr , "${my_array2[@]}" >> control.csv # https://linuxize.com/post/bash-app
 Rscript ${DBSLMM} --summary ${summf}${chr}.assoc.txt --outPath ${outPath} \
   --plink ${plink} --dbslmm ${dbslmm} --outfile ${outfile} --ref ${ref}${chr} --n ${n} \
   --nsnp ${m} --type auto --model DBSLMM --block ${blockf}${chr}.bed \
-  --h2 ${h2} --control_file control.csv
+  --h2 ${h2} --control control.csv
   
   
   
