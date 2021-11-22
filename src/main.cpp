@@ -85,7 +85,7 @@ int main(int argc, char * argv[])
   arma::field < arma::mat > mats_training = assembleMatrices(training);
   arma::field < arma::mat > mats_test = assembleMatrices(test);
     //2. input matrices to calc_asymptotic_variance
-  arma::mat vv = calc_asymptotic_variance(mats_training(2), t(mats_training(1)), mats_training(0), 
+  arma::mat vv = calc_asymptotic_variance(mats_training(2), arma::trans(mats_training(1)), mats_training(0), 
                                           cPar.h, cPar.n, mats_test(4), mats_test(3));
   //3. write diagonal of var to a csv file
   arma::vec vd = diagvec(vv);
