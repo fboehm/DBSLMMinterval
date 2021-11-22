@@ -296,7 +296,7 @@ arma::field < arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
     }
     clearVector(summ_l);
   }
-  
+  arma::field < arma::mat> out;
   // output stream
   string eff_str = cPar.eff + ".txt"; 
   ofstream effFout(eff_str.c_str());
