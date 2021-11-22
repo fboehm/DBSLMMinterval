@@ -56,7 +56,9 @@ args_list <- list(
               metavar = "character"),
   make_option("--outfile", type = "character", default = "out.dat", 
               help = "INPUT: The path and file name for the outputted armadillo field",
-              metavar = "character")
+              metavar = "character"),
+  make_option("--control", type = "character", default = "control.csv",
+              help = "INPUT: file path for control file", metavar = "character")
 )
 
 opt_parser <- OptionParser(option_list=args_list)
@@ -146,6 +148,7 @@ if (opt$model == "DBSLMM"){
     ## dbslmm
     if (opt$type == "auto"){
       system(paste0(opt$dbslmm,
+                    " -control ", opt$control,
                     " -outfile ", opt$outfile,
                     " -s ",      opt$summ,
                            " -r ",      opt$ref,
