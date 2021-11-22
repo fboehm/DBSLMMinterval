@@ -30,7 +30,7 @@ class PARAM {
 public:
   //parameters
   string outfile;//fred's new parameter
-  string control_file; //fred's new parameter, path to control file, a csv text file w one row per chromosome
+  string control; //fred's new parameter, path to control file, a csv text file w one row per chromosome
   string s; 
   string l;
   string r;
