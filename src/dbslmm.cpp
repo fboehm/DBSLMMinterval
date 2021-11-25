@@ -190,6 +190,7 @@ void DBSLMM::BatchRun(PARAM &cPar) {
    cout << "-t:      " << cPar.t << endl;
    cout << "-eff:    " << cPar.eff << endl;
    cout << "-outfile:     " << cPar.outfile << endl; 
+   cout << "-nchr:        " << cPar.nchr << endl;
   
   // check files
   string ref_fam_str = cPar.r + ".fam"; //next line below declares the ifstream objects, including an ifstream object for reading the fam file! 
