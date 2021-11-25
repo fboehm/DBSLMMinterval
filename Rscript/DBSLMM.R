@@ -56,7 +56,11 @@ args_list <- list(
               metavar = "character"),
   make_option("--outfile", type = "character", default = "out.dat", 
               help = "INPUT: The path and file name for the outputted armadillo field",
+              metavar = "character"),
+  make_option("--nchr", type = "character", default = "22", 
+              help = "INPUT: The number of chromosomes",
               metavar = "character")
+  
 )
 
 opt_parser <- OptionParser(option_list=args_list)
@@ -155,7 +159,8 @@ if (opt$model == "DBSLMM"){
                            " -b ",      opt$block,
                            " -mafMax ", opt$mafMax,      
                            " -t ",      opt$thread,
-                           " -eff ",    opt$outPath, prefix_file, ".dbslmm"
+                           " -eff ",    opt$outPath, prefix_file, ".dbslmm",
+                            " -nchr ", opt$nchr
 ))
   
     } else {
@@ -208,7 +213,9 @@ if (opt$model == "DBSLMM"){
                     " -b ",      opt$block,
                     " -h ",      opt$h2,
                     " -t ",      opt$thread,
-                    " -eff ",    opt$outPath, prefix_file, ".dbslmm"))
+                    " -eff ",    opt$outPath, prefix_file, ".dbslmm",
+                    " -nchr ", opt$nchr
+                    ))
     
     } else {
       h2_vec <- as.numeric(unlist(strsplit(opt$h2f, ",")))
