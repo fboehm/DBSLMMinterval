@@ -158,6 +158,15 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
       cPar.outfile = str;
       
     }
+    else if (strcmp(argv[i], "--nchr") == 0 || strcmp(argv[i], "-nchr") == 0) {
+      
+      if (argv[i + 1] == NULL || argv[i + 1][0] == '-') { continue; }
+      ++i;
+      str.clear();
+      str.assign(argv[i]);
+      cPar.nchr = atoi(str.c_str());
+    }
+    
   }
   return;
 }

@@ -39,6 +39,7 @@ public:
   double h;
   int t;
   string eff;
+  int nchr; //fred's new parameter
 };
 
 class DBSLMM {
