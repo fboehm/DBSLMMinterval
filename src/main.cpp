@@ -42,14 +42,19 @@ int main(int argc, char * argv[])
   /*for (int i = 0; i < argc; ++i)
     cout << argv[i] << "\n";
   */
+  for(int i = 0; i < argc; ++i)
+    cout << argv[i] << '\n';
+  
+  
   cDB.Assign(argc, argv, cPar);
     //initialize a arma::field to store outputs for var calcs!
   arma::field <arma::mat > ff;
   arma::field < arma::mat> training(nchr, 5);
   arma::field < arma::mat> test(nchr, 5);
-  for (int i = 0; i < 2 * nchr; ++i){
+// for (int i = 0; i < 2 * nchr; ++i){
     // 
-    cPar.b = rr[1];// chr is column 0; then do the other args in alphabetical order
+   
+   /* cPar.b = rr[1];// chr is column 0; then do the other args in alphabetical order
     // b is the path to the block data files directory
     cPar.eff = rr[2]; //file path for outputting the snp effect estimates
     cPar.h = std::stod(rr[3]); //heritability
@@ -60,6 +65,7 @@ int main(int argc, char * argv[])
     cPar.r = rr[8]; // bfile for reference data 
     cPar.s = rr[9]; //small effects summary file path
     cPar.t = std::stoi(rr[10]); //number of threads
+    */
     double sigma2_s = cPar.h / (double)cPar.nsnp;
     // call BatchRun
     ff = cDB.BatchRun(cPar);
@@ -68,7 +74,7 @@ int main(int argc, char * argv[])
     } else {
       test.row(i - nchr) = assembleMatrices(ff);
     }
-  }
+  //}
   //var calcs here! 
   //1. assemble genome-wide matrices from "results"
   // results is a 22-long field where each entry is itself a 1d field containing 5 matrices
