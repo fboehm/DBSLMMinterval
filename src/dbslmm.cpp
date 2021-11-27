@@ -171,7 +171,7 @@ void DBSLMM::Assign(int argc, char ** argv, PARAM &cPar) {
   return;
 }
 
-void DBSLMM::BatchRun(PARAM &cPar) {
+arma::field <arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
   
   SNPPROC cSP; //declare objects, prefixed with "c"
   IO cIO;
@@ -374,5 +374,5 @@ void DBSLMM::BatchRun(PARAM &cPar) {
         effFout << eff_s[i].snp << " " << eff_s[i].a1 << " " << eff_s[i].beta << " " << beta_s_noscl << " " << 0 << endl; 
     }
   }
-  return;
+  return out;
 }
