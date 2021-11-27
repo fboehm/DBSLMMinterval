@@ -196,11 +196,14 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
 			B = 0;// reset B to zero
 			num_l_vec.clear(); 
 			num_s_vec.clear();
+		}
+	}
 	return result;
 }//end function
 
 // estimate only small effect
-arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
+arma::field <arma::mat> DBSLMMFIT::est(
+    int n_ref,
                    int n_obs, 
                    double sigma_s, 
                    int num_block, 
@@ -208,7 +211,8 @@ arma::field <arma::mat> DBSLMMFIT::est(int n_ref,
                    string bed_str,
           				 vector <INFO> info_s, 
           				 int thread, 
-          				 vector <EFF> &eff_s ){
+          				 vector <EFF> &eff_s 
+		  ){
   //arma::field <arma::mat> Sigma_ss(num_block);
 	// get the maximum number of each block
 	int count_s = 0;
