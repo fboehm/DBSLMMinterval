@@ -324,7 +324,7 @@ arma::field <arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
               eff_s, 
               eff_l); 
     cout << "This is outfile: " << cPar.outfile << endl;
-    out.save(cPar.outfile, arma::arma_binary);
+    //out.save(cPar.outfile, arma::arma_binary);
     //out.save("foo.dat", arma::arma_binary);//need to rename in bash file
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
@@ -362,7 +362,7 @@ arma::field <arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
               cPar.t, 
               eff_s
     ); //call est for small effects only!
-    out.save(cPar.outfile, arma::arma_binary);//need to rename in bash file
+   // out.save(cPar.outfile, arma::arma_binary);//need to rename in bash file
     
     double time_fitting = cIO.getWalltime() - t_fitting;
     cout << "Fitting time: " << time_fitting << " seconds." << endl;
