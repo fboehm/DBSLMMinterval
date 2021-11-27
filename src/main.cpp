@@ -21,9 +21,11 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <armadillo>
 
 #include "../include/dbslmm.hpp"
 
+using namespace arma;
 using namespace std;
 
 int main(int argc, char * argv[])
@@ -48,50 +50,10 @@ int main(int argc, char * argv[])
   
   cDB.Assign(argc, argv, cPar);
     //initialize a arma::field to store outputs for var calcs!
-  arma::field <arma::mat > ff;
-  arma::field < arma::mat> training(nchr, 5);
-  arma::field < arma::mat> test(nchr, 5);
-// for (int i = 0; i < 2 * nchr; ++i){
-    // 
-   
-   /* cPar.b = rr[1];// chr is column 0; then do the other args in alphabetical order
-    // b is the path to the block data files directory
-    cPar.eff = rr[2]; //file path for outputting the snp effect estimates
-    cPar.h = std::stod(rr[3]); //heritability
-    cPar.l = rr[4]; //large effects summary file path
-    cPar.mafMax = std::stod(rr[5]);//https://www.programiz.com/cpp-programming/string-float-conversion
-    cPar.n = std::stoi(rr[6]); //sample size
-    cPar.nsnp = std::stoi(rr[7]); //number of snps (genomewide)
-    cPar.r = rr[8]; // bfile for reference data 
-    cPar.s = rr[9]; //small effects summary file path
-    cPar.t = std::stoi(rr[10]); //number of threads
-    */
     double sigma2_s = cPar.h / (double)cPar.nsnp;
     // call BatchRun
-    ff = cDB.BatchRun(cPar);
-    if (i < nchr){
-      training.row(i) = assembleMatrices(ff);
-    } else {
-      test.row(i - nchr) = assembleMatrices(ff);
-    }
-  //}
-  //var calcs here! 
-  //1. assemble genome-wide matrices from "results"
-  // results is a 22-long field where each entry is itself a 1d field containing 5 matrices
-  arma::field < arma::mat > mats_training = assembleMatrices(training);
-  arma::field < arma::mat > mats_test = assembleMatrices(test);
-  //2. input matrices to calc_asymptotic_variance
-  arma::mat vv = calc_asymptotic_variance(mats_training(2), 
-                                          arma::trans(mats_training(1)), 
-                                          mats_training(0), 
-                                          cPar.h, 
-                                          cPar.n, 
-                                          mats_test(4), 
-                                          mats_test(3));
-  //3. write diagonal of var to a csv file
-  arma::vec vd = diagvec(vv);
-  vd.save("out.csv", csv_ascii);
-  
+  arma::field <arma::mat> ff = cDB.BatchRun(cPar);
+  ff.save("out.bin", arma_binary);
   
   return EXIT_SUCCESS;
 }
