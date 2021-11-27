@@ -50,7 +50,7 @@ int main(int argc, char * argv[])
   
   cDB.Assign(argc, argv, cPar);
     //initialize a arma::field to store outputs for var calcs!
-    double sigma2_s = cPar.h / (double)cPar.nsnp;
+    //double sigma2_s = cPar.h / (double)cPar.nsnp;
     // call BatchRun
   arma::field <arma::mat> ff = cDB.BatchRun(cPar);
   ff.save("out.bin", arma_binary);
