@@ -299,7 +299,7 @@ arma::field <arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
     }
     clearVector(summ_l);
   }
-  
+  arma::field < arma::mat> out;
   // output stream
   string eff_str = cPar.eff + ".txt"; 
   ofstream effFout(eff_str.c_str());
@@ -312,7 +312,7 @@ arma::field <arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
     double t_fitting = cIO.getWalltime();
     double sigma_s = cPar.h / (double)cPar.nsnp; // this tells us that sigma_s *is* $\hat\sigma_s^2$!
     cout << "Fitting model..." << endl;
-    arma::field < arma::mat> out = cDBSF.est(n_ref, 
+    out = cDBSF.est(n_ref, 
               cPar.n,
               sigma_s, 
               num_block_s, //
@@ -352,7 +352,7 @@ arma::field <arma::mat> DBSLMM::BatchRun(PARAM &cPar) {
     double t_fitting = cIO.getWalltime();
     double sigma_s = cPar.h / (double)cPar.nsnp;
     cout << "Fitting model..." << endl;
-    arma::field < arma::mat> out = cDBSF.est(n_ref, 
+    out = cDBSF.est(n_ref, 
               cPar.n, 
               sigma_s, 
               num_block_s, 
