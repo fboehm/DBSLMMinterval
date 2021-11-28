@@ -228,6 +228,7 @@ arma::field <arma::mat> DBSLMMFIT::est(
 		}
 	}
 	count_s = 0; // reset
+	
 	double len_s = num_s.max(); //len_s is the number of small effect markers in the block with the most
 	
 	int B = 0;
